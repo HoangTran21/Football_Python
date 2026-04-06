@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Game Sút Penalty - Bóng Đá</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="welcome-overlay">
+        <div class="welcome-card">
+            <div class="welcome-header">
+                <h2>⚽ PENALTY MASTER ⚽</h2>
+                <p>Nâng tầm kỹ năng lập trình Python của bạn!</p>
+            </div>
+
+            <div class="rules-section">
+                <h3>🎁 QUY TẮC NHẬN QUÀ</h3>
+                <div class="rules-grid">
+                    <div class="rule-item">
+                        <span class="rule-icon">🎯</span>
+                        <p>Ghi <b>6 - 9</b> bàn: Được mở <b>1</b> bao lì xì</p>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">🔥</span>
+                        <p>Ghi <b>10/10</b> bàn: Được mở <b>2</b> bao lì xì</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module-selection">
+                <h3>📚 CHỌN MODULE THỬ THÁCH</h3>
+                <div class="module-options">
+                    <div class="module-card active" id="mod1" onclick="selectModule(1)">
+                        <div class="mod-icon">🐍</div>
+                        <h4>Module 1</h4>
+                        <p>50 câu hỏi Python căn bản & cú pháp thông dụng</p>
+                    </div>
+                    <div class="module-card" id="mod2" onclick="selectModule(2)">
+                        <div class="mod-icon">📊</div>
+                        <h4>Module 2</h4>
+                        <p>Cấu trúc dữ liệu (List, Dict, Set) & Giải thuật</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="start-game-btn" onclick="startGame()">BẮT ĐẦU CHINH PHỤC</button>
+        </div>
+    </div>
+
+    <div id="gameContainer" style="display: none; flex-direction: column; align-items: center; width: 100%;">
+        <div id="rulePanel">
+            <h3>🎁 QUY TẮC NHẬN QUÀ</h3>
+            <ul>
+                <li>✅ Ghi <b>6 - 9</b> bàn: Được mở <b>1</b> bao lì xì</li>
+                <li>🔥 Ghi <b>10/10</b> bàn: Được mở <b>2</b> bao lì xì</li>
+            </ul>
+        </div>
+        <h1>PENALTY MASTER ⚽</h1>
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+        <div id="questionBox">
+            <div id="lifelines">
+                <button class="lifeline-btn" id="callBtn" onclick="useLifeline('call')">📞 Gọi điện</button>
+                <button class="lifeline-btn" id="wiseBtn" onclick="useLifeline('wise')">🧙 Thông thái</button>
+            </div>
+            <div id="question"></div>
+
+            <!-- Direction Box moved above answer area -->
+            <div id="directionBox" style="display:none; margin: 15px 0;">
+                <p style="font-weight:700; color:var(--primary-dark); margin: 0 0 10px 0;">🎯 CHỌN HƯỚNG SÚT:</p>
+                <div class="button-group">
+                    <button onclick="shoot(0)">Góc trái</button>
+                    <button onclick="shoot(1)">Ở giữa</button>
+                    <button onclick="shoot(2)">Góc phải</button>
+                </div>
+            </div>
+
+            <textarea id="answer" rows="2" placeholder="Viết code Python trả lời..."></textarea><br>
+            <button id="submitBtn" onclick="submitAnswer()">Trả lời</button>
+            <div id="hint"></div>
+        </div>
+
+        <!-- Calling Modal (Anh Độ Mixi style) -->
+        <div id="callModal" class="modal" style="display:none;">
+            <div class="modal-content mixi-modal">
+                <div class="mixi-flex">
+                    <img src="img/mixi.jpg" alt="Anh Độ Mixi" id="mixiImg">
+                    <div class="mixi-content">
+                        <div id="callingIcon">📱</div>
+                        <div id="callMsg">Đang gọi cho Anh Độ Mixi...</div>
+                        <div id="callResult"></div>
+                        <button onclick="closeModal('callModal')">Đồng ý luôn!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wise Man Modal -->
+        <div id="wiseModal" class="modal" style="display:none;">
+            <div class="modal-content mixi-modal">
+                <div class="mixi-flex">
+                    <img src="img/TAN.jpg" alt="Nhà thông thái" id="wiseImg"
+                        style="width: 250px; height: auto; border-radius: 15px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2);">
+                    <div class="mixi-content">
+                        <div id="wiseIcon" style="font-size: 2.5rem; margin-bottom: 10px;">🧙‍♂️</div>
+                        <div id="wiseMsg" style="font-weight: 700; color: #3498db;">Nhà thông thái đang suy nghĩ...
+                        </div>
+                        <div id="wiseResult" style="font-size: 1.1rem; color: #2c3e50; margin: 15px 0;"></div>
+                        <button onclick="closeModal('wiseModal')"
+                            style="background: linear-gradient(135deg, #3498db, #2980b9);">Đã hiểu, cảm ơn bác!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kho Ga De Tem Modal -->
+        <div id="prizeModal" class="modal" style="display:none;">
+            <div class="modal-content mixi-modal">
+                <div class="mixi-flex">
+                    <img src="img/ando_mixi.jpg" alt="Khô gà đè tem" id="prizeImg"
+                        style="max-width: 300px; border-radius: 10px;">
+                    <div class="mixi-content">
+                        <div id="prizeTitle"
+                            style="font-size: 24px; font-weight: 800; color: #ff9f43; margin-bottom: 10px;">🍗 KHÔ GÀ ĐÈ
+                            TEM!</div>
+                        <div id="prizeMsg">Chúc mừng bạn đã nhận được phần quà đặc biệt từ Độ Mixi!</div>
+                        <button onclick="closeModal('prizeModal')">Tuyệt vời!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="result"></div>
+
+        <div id="prizes" style="display:none;">
+            <h2 style="color:#fff; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">CHÚC MỪNG SIÊU SAO! 🎉</h2>
+            <p style="color:#fff;">Bạn đã ghi được ít nhất 7 bàn thắng. Hãy bốc thăm lì xì may mắn!</p>
+            <div class="envelope-container" id="envelopeContainer">
+                <!-- Lì xì will be injected here via JS -->
+            </div>
+        </div>
+
+    </div> <!-- End gameContainer -->
+
+    <script src="script.js"></script>
+</body>
+
+</html>
