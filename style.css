@@ -12,8 +12,8 @@
 
 body {
     font-family: 'Outfit', sans-serif;
-    background: radial-gradient(circle at top, #1a2a6c, #b21f1f, #fdbb2d);
-    background-attachment: fixed;
+    background: url('img/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
     margin: 0;
     padding: 20px;
     display: flex;
@@ -186,7 +186,8 @@ button:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.envelope.opened::before {
+.envelope.opened::before,
+.envelope.revealed::before {
     display: none;
 }
 
@@ -198,9 +199,23 @@ button:hover {
     width: 100%;
 }
 
-.envelope.opened .prize-content {
+.envelope.opened .prize-content,
+.envelope.revealed .prize-content {
     display: block;
     color: #c0392b;
+}
+
+.envelope.revealed {
+    background: rgba(255, 255, 255, 0.4) !important;
+    transform: rotateY(180px) scale(0.9);
+    border: 2px dashed #ccc;
+    opacity: 0.6;
+    filter: grayscale(0.5);
+    transition: all 1s ease;
+}
+
+.envelope.revealed .prize-content {
+    opacity: 0.5;
 }
 
 .prize-icon {
@@ -455,7 +470,8 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, rgba(26, 42, 108, 0.95), rgba(0, 0, 0, 0.98));
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('img/bg.jpg') no-repeat center center;
+    background-size: cover;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -604,3 +620,42 @@ button:hover {
         padding: 25px;
     }
 }
+
+.opt-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #fff;
+    color: var(--dark);
+    border: 2px solid #eee;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.opt-btn:hover {
+    background: var(--secondary);
+    color: #fff;
+    border-color: var(--secondary);
+    transform: translateX(10px);
+    box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+#optsContainer .opt-btn {
+    animation: slideInRight 0.4s ease forwards;
+    opacity: 0;
+}
+
+#optsContainer .opt-btn:nth-child(1) { animation-delay: 0.1s; }
+#optsContainer .opt-btn:nth-child(2) { animation-delay: 0.2s; }
+#optsContainer .opt-btn:nth-child(3) { animation-delay: 0.3s; }
+#optsContainer .opt-btn:nth-child(4) { animation-delay: 0.4s; }

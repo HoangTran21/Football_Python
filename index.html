@@ -21,11 +21,15 @@
                 <div class="rules-grid">
                     <div class="rule-item">
                         <span class="rule-icon">🎯</span>
-                        <p>Ghi <b>6 - 9</b> bàn: Được mở <b>1</b> bao lì xì</p>
+                        <p>Ghi <b>6 - 8</b> bàn: Được mở <b>1</b> bao lì xì</p>
                     </div>
                     <div class="rule-item">
                         <span class="rule-icon">🔥</span>
-                        <p>Ghi <b>10/10</b> bàn: Được mở <b>2</b> bao lì xì</p>
+                        <p>Ghi <b>9</b> bàn: Được mở <b>2</b> bao lì xì</p>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">👑</span>
+                        <p>Ghi <b>10/10</b> bàn: Được mở <b>3</b> bao lì xì</p>
                     </div>
                 </div>
             </div>
@@ -54,8 +58,9 @@
         <div id="rulePanel">
             <h3>🎁 QUY TẮC NHẬN QUÀ</h3>
             <ul>
-                <li>✅ Ghi <b>6 - 9</b> bàn: Được mở <b>1</b> bao lì xì</li>
-                <li>🔥 Ghi <b>10/10</b> bàn: Được mở <b>2</b> bao lì xì</li>
+                <li>✅ Ghi <b>6 - 8</b> bàn: Được mở <b>1</b> bao lì xì</li>
+                <li>🚀 Ghi <b>9</b> bàn: Được mở <b>2</b> bao lì xì</li>
+                <li>🔥 Ghi <b>10/10</b> bàn: Được mở <b>3</b> bao lì xì</li>
             </ul>
         </div>
         <h1>PENALTY MASTER ⚽</h1>
@@ -78,6 +83,7 @@
                 </div>
             </div>
 
+            <div id="optsContainer" style="display:none; margin: 15px 0;"></div>
             <textarea id="answer" rows="2" placeholder="Viết code Python trả lời..."></textarea><br>
             <button id="submitBtn" onclick="submitAnswer()">Trả lời</button>
             <div id="hint"></div>
@@ -137,7 +143,7 @@
 
         <div id="prizes" style="display:none;">
             <h2 style="color:#fff; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">CHÚC MỪNG SIÊU SAO! 🎉</h2>
-            <p style="color:#fff;">Bạn đã ghi được ít nhất 7 bàn thắng. Hãy bốc thăm lì xì may mắn!</p>
+            <p style="color:#fff;">Bạn đã ghi được ít nhất 6 bàn thắng. Hãy bốc thăm lì xì may mắn!</p>
             <div class="envelope-container" id="envelopeContainer">
                 <!-- Lì xì will be injected here via JS -->
             </div>

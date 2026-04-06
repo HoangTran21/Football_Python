@@ -87,6 +87,7 @@ const directions = ["Góc Trái", "Chính Giữa", "Góc Phải"];
 let gameStarted = false;
 let currentQuestion = 0;
 let score = 0;
+let lives = 3;
 let shooting = false;
 let helps = { call: false, wise: false };
 
@@ -142,13 +143,19 @@ function drawField() {
     // Scoreboard on field
     ctx.save();
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.roundRect(15, 15, 160, 70, 12);
+    ctx.roundRect(10, 10, 125, 75, 12);
     ctx.fill();
     ctx.fillStyle = '#fff';
-    ctx.font = '700 15px Outfit';
-    ctx.fillText("LƯỢT SÚT: " + (currentQuestion + 1) + "/10", 30, 42);
+    ctx.font = '700 13px Outfit';
+    ctx.fillText("LƯỢT: " + (currentQuestion + 1) + "/10", 20, 30);
     ctx.fillStyle = '#f1c40f';
-    ctx.fillText("BÀN THẮNG: " + score, 30, 68);
+    ctx.fillText("BÀN: " + score, 20, 48);
+    ctx.fillStyle = '#e74c3c';
+    let hearts = "";
+    for (let i = 0; i < 3; i++) {
+        hearts += (i < lives) ? "❤️" : "🖤";
+    }
+    ctx.fillText("TIM: " + hearts, 20, 66);
     ctx.restore();
 }
 
@@ -328,14 +335,31 @@ function animateShot(dir, isGoal, cb) {
     step();
 }
 
-function initGame() {
-    const bank = selectedModule === 1 ? questionBank : questionBank2;
-    activeQuestions = [...bank].sort(() => Math.random() - 0.5).slice(0, 10);
-    currentQuestion = 0;
-    score = 0;
-    helps = { call: false, wise: false };
-    document.querySelectorAll('.lifeline-btn').forEach(b => b.classList.remove('used'));
-    showQuestion();
+async function initGame() {
+    try {
+        const response = await fetch(`module${selectedModule}.json`);
+        const data = await response.json();
+
+        // Gộp trắc nghiệm và code thành một danh sách duy nhất
+        const mcqs = (data.questions || []).map(q => ({ ...q, type: 'mcq' }));
+        const codes = (data.coding_tasks || []).map(q => ({ ...q, type: 'code', m: q.q }));
+
+        const allQuestions = [...mcqs, ...codes];
+        activeQuestions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
+
+        currentQuestion = 0;
+        score = 0;
+        lives = 3;
+        helps = { call: false, wise: false };
+        document.querySelectorAll('.lifeline-btn').forEach(b => b.classList.remove('used'));
+        showQuestion();
+    } catch (e) {
+        console.error("Lỗi tải câu hỏi:", e);
+        // Fallback if fetch fails
+        const bank = selectedModule === 1 ? questionBank : questionBank2;
+        activeQuestions = [...bank].sort(() => Math.random() - 0.5).slice(0, 10);
+        showQuestion();
+    }
 }
 
 function selectModule(num) {
@@ -354,33 +378,111 @@ function startGame() {
 function showQuestion() {
     if (currentQuestion >= 10) { showFinalResult(); return; }
     const q = activeQuestions[currentQuestion];
-    document.getElementById('question').innerText = `Câu ${currentQuestion + 1}: ${q.m}`;
-    document.getElementById('answer').value = '';
+
+    // Câu hỏi (m đối với code quest, q đối với mcq)
+    const questionText = q.type === 'mcq' ? q.q : q.m;
+    document.getElementById('question').innerText = `Câu ${currentQuestion + 1}: ${questionText}`;
+
     document.getElementById('hint').innerText = '';
     document.getElementById('directionBox').style.display = 'none';
-    document.getElementById("answer").style.display = "block";
-    document.getElementById("submitBtn").style.display = "inline-block";
     document.getElementById('result').innerText = '';
     document.getElementById('result').style.color = '#fff';
+
+    const optsContainer = document.getElementById('optsContainer');
+    const answerInput = document.getElementById('answer');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (q.type === 'mcq') {
+        // Hiển thị trắc nghiệm
+        answerInput.style.display = 'none';
+        submitBtn.style.display = 'none';
+        optsContainer.style.display = 'block';
+        optsContainer.innerHTML = '';
+
+        q.opts.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkMCQ(idx);
+            optsContainer.appendChild(btn);
+        });
+    } else {
+        // Hiển thị viết code
+        optsContainer.style.display = 'none';
+        answerInput.style.display = 'block';
+        submitBtn.style.display = 'inline-block';
+        answerInput.value = '';
+    }
+
     ball = { ...ballStart, rotation: 0 };
     goalie = { x: cw / 2, y: 160, rotation: 0, state: 'idle', color: '#3498db' };
     player = { x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null };
     render();
 }
 
+function handleLifeLoss() {
+    lives--;
+    render();
+    if (lives <= 0) {
+        showGameOver();
+        return true;
+    }
+    return false;
+}
+
+function showGameOver() {
+    shooting = false;
+    document.getElementById('questionBox').style.display = 'none';
+    document.getElementById('directionBox').style.display = 'none';
+    document.getElementById('hint').innerText = '';
+    
+    const resultDiv = document.getElementById("result");
+    resultDiv.style.color = '#e74c3c';
+    resultDiv.innerHTML = `<h3>HẾT LƯỢT! 💔</h3><p>Bạn đã hết tim rồi. Phải bắt đầu lại từ đầu thôi!</p>`;
+    
+    const restartBtn = document.createElement("button");
+    restartBtn.innerText = "Chơi lại từ đầu";
+    restartBtn.className = "start-game-btn";
+    restartBtn.style.marginTop = "20px";
+    restartBtn.style.width = "auto";
+    restartBtn.style.padding = "10px 30px";
+    restartBtn.onclick = () => location.reload();
+    resultDiv.appendChild(restartBtn);
+}
+
+function checkMCQ(idx) {
+    if (shooting) return;
+    const q = activeQuestions[currentQuestion];
+    if (idx === q.ans) {
+        document.getElementById('result').innerText = 'Chính xác! Bạn đã sẵn sàng sút bóng.';
+        document.getElementById('directionBox').style.display = 'block';
+        document.getElementById('optsContainer').style.display = "none";
+    } else {
+        document.getElementById('result').style.color = '#e74c3c';
+        document.getElementById('result').innerText = 'Sai rồi! -1 tim ❤️';
+        document.getElementById('hint').innerText = 'Gợi ý: Hãy suy nghĩ kỹ hơn!';
+        handleLifeLoss();
+    }
+}
+
 function submitAnswer() {
     if (shooting) return;
     const val = document.getElementById('answer').value.trim();
     const q = activeQuestions[currentQuestion];
-    if (q.r.test(val)) {
+
+    // Convert string regex from JSON back to RegExp if needed
+    const regex = typeof q.r === 'string' ? new RegExp(q.r) : q.r;
+
+    if (regex.test(val)) {
         document.getElementById('result').innerText = 'Chính xác! Bạn đã sẵn sàng sút bóng.';
         document.getElementById('directionBox').style.display = 'block';
         document.getElementById("answer").style.display = "none";
         document.getElementById("submitBtn").style.display = "none";
     } else {
         document.getElementById('result').style.color = '#e74c3c';
-        document.getElementById('result').innerText = 'Mã code chưa đúng rồi!';
+        document.getElementById('result').innerText = 'Mã code chưa đúng rồi! -1 tim ❤️';
         document.getElementById('hint').innerText = 'Nhà thông thái gợi ý: ' + q.h;
+        handleLifeLoss();
     }
 }
 
@@ -412,13 +514,22 @@ function useLifeline(type) {
     helps[type] = true;
     document.getElementById(type + 'Btn').classList.add('used');
     const q = activeQuestions[currentQuestion];
+
+    // Quyết định nội dung gợi ý dựa trên loại câu hỏi
+    let resultText = "";
+    if (q.type === 'mcq') {
+        resultText = q.opts[q.ans];
+    } else {
+        resultText = (type === 'call') ? q.h : q.w;
+    }
+
     if (type === 'call') {
         document.getElementById('callModal').style.display = 'flex';
         document.getElementById('callMsg').innerText = "Số này của ai ấy nhỉ?...";
         document.getElementById('callResult').innerText = "";
         setTimeout(() => {
             document.getElementById('callMsg').innerText = "À, Anh Độ Mixi đây rồi!";
-            document.getElementById('callResult').innerHTML = `Anh bảo đáp án là: <div class="highlight-code">${q.h}</div><span class="extra-msg">"Em đừng có mà chối!"</span>`;
+            document.getElementById('callResult').innerHTML = `Anh bảo đáp án là: <div class="highlight-code">${resultText}</div><span class="extra-msg">"Em đừng có mà chối!"</span>`;
             player.thought = "Nà ná na na";
             render();
         }, 1500);
@@ -426,8 +537,8 @@ function useLifeline(type) {
         document.getElementById('wiseModal').style.display = 'flex';
         document.getElementById('wiseResult').innerText = "";
         setTimeout(() => {
-            document.getElementById('wiseMsg').innerText = "Lời khuyên từ nhà thông thái:";
-            document.getElementById('wiseResult').innerHTML = `Gợi ý nè: <div class="highlight-code">${q.w}</div><span class="extra-msg">"Tin chuẩn em nhé!"</span>`;
+            document.getElementById('wiseMsg').innerText = "Lời khuyên từ nhà thông thái (người Ý):";
+            document.getElementById('wiseResult').innerHTML = `Người Ý nói: <div class="highlight-code">${resultText}</div><span class="extra-msg">"Tin chuẩn em nhé!"</span>`;
             player.thought = "Cảm ơn bác Trông Anh Ngược";
             render();
         }, 1500);
@@ -445,10 +556,14 @@ function showFinalResult() {
     const resultDiv = document.getElementById("result");
 
     if (score >= 6) {
-        picksAllowed = (score === 10) ? 2 : 1;
-        msg += score === 10
-            ? `QUÁ XUẤT SẮC! Bạn được mở 2 bao lì xì! 🔥`
-            : `Tuyệt vời! Bạn được mở 1 bao lì xì! 🎁`;
+        if (score === 10) picksAllowed = 3;
+        else if (score === 9) picksAllowed = 2;
+        else picksAllowed = 1;
+
+        if (score === 10) msg += `BÁ ĐẠO! Bạn được mở 3 bao lì xì! 👑🔥`;
+        else if (score === 9) msg += `TUYỆT VỜI! Bạn được mở 2 bao lì xì! 🚀`;
+        else msg += `Giỏi lắm! Bạn được mở 1 bao lì xì! 🎁`;
+        
         resultDiv.innerText = msg;
         setTimeout(showRedEnvelopes, 1500);
     } else {
@@ -505,8 +620,12 @@ function openEnvelope(index) {
     }
 
     if (picksAllowed === 0) {
-        // Disable all envelopes
-        document.querySelectorAll('.envelope').forEach(e => e.onclick = null);
+        // Show remaining envelopes but dimmed
+        document.querySelectorAll('.envelope:not(.opened)').forEach(env => {
+            env.classList.add('revealed');
+            env.onclick = null;
+        });
+        document.querySelectorAll('.envelope.opened').forEach(env => env.onclick = null);
 
         setTimeout(() => {
             const resultDiv = document.getElementById("result");
