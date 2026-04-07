@@ -21,11 +21,11 @@
                 <div class="rules-grid">
                     <div class="rule-item">
                         <span class="rule-icon">🎯</span>
-                        <p>Ghi <b>6 - 8</b> bàn: Được mở <b>1</b> bao lì xì</p>
+                        <p>Ghi <b>6 - 7</b> bàn: Được mở <b>1</b> bao lì xì</p>
                     </div>
                     <div class="rule-item">
                         <span class="rule-icon">🔥</span>
-                        <p>Ghi <b>9</b> bàn: Được mở <b>2</b> bao lì xì</p>
+                        <p>Ghi <b>8 - 9</b> bàn: Được mở <b>2</b> bao lì xì</p>
                     </div>
                     <div class="rule-item">
                         <span class="rule-icon">👑</span>
@@ -50,7 +50,17 @@
                 </div>
             </div>
 
-            <button class="start-game-btn" onclick="startGame()">BẮT ĐẦU CHINH PHỤC</button>
+            <div class="player-start-bar">
+                <div class="input-group">
+                    <label>Tên</label>
+                    <input type="text" id="playerNameInput" placeholder="TIẾN LINH" value="LINH">
+                </div>
+                <div class="input-group">
+                    <label>Số áo</label>
+                    <input type="number" id="playerNumberInput" min="1" max="99" value="22">
+                </div>
+                <button class="start-game-btn horizontal" onclick="startGame()">BẮT ĐẦU CHINH PHỤC</button>
+            </div>
         </div>
     </div>
 
@@ -58,8 +68,8 @@
         <div id="rulePanel">
             <h3>🎁 QUY TẮC NHẬN QUÀ</h3>
             <ul>
-                <li>✅ Ghi <b>6 - 8</b> bàn: Được mở <b>1</b> bao lì xì</li>
-                <li>🚀 Ghi <b>9</b> bàn: Được mở <b>2</b> bao lì xì</li>
+                <li>✅ Ghi <b>6 - 7</b> bàn: Được mở <b>1</b> bao lì xì</li>
+                <li>🚀 Ghi <b>8 - 9</b> bàn: Được mở <b>2</b> bao lì xì</li>
                 <li>🔥 Ghi <b>10/10</b> bàn: Được mở <b>3</b> bao lì xì</li>
             </ul>
         </div>

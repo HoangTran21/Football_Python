@@ -490,6 +490,8 @@ button:hover {
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.2);
     animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .welcome-header h2 {
@@ -659,3 +661,83 @@ button:hover {
 #optsContainer .opt-btn:nth-child(2) { animation-delay: 0.2s; }
 #optsContainer .opt-btn:nth-child(3) { animation-delay: 0.3s; }
 #optsContainer .opt-btn:nth-child(4) { animation-delay: 0.4s; }
+
+
+/* Player Start Bar Styling (Horizontal) */
+.player-start-bar {
+    background: rgba(52, 152, 219, 0.1);
+    padding: 15px 25px;
+    border-radius: 60px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(52, 152, 219, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: nowrap;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.input-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #2980b9;
+    text-transform: uppercase;
+    margin-left: 10px;
+}
+
+.input-group input {
+    background: #fff;
+    border: 2px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    width: 60px;
+    text-align: center;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+#playerNameInput {
+    width: 140px;
+}
+
+.input-group input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.start-game-btn.horizontal {
+    margin: 0;
+    padding: 12px 30px;
+    font-size: 1rem;
+    white-space: nowrap;
+    border-radius: 30px;
+}
+
+@media (max-width: 700px) {
+    .player-start-bar {
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 20px;
+    }
+    
+    #playerNameInput, .input-group input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .start-game-btn.horizontal {
+        width: 100%;
+    }
+}

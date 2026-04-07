@@ -90,6 +90,8 @@ let score = 0;
 let lives = 3;
 let shooting = false;
 let helps = { call: false, wise: false };
+let playerName = "L";
+let playerNumber = "22";
 
 // UI Elements
 const canvas = document.getElementById('gameCanvas');
@@ -101,7 +103,7 @@ const ch = canvas.height;
 const goalPos = { x: cw / 2, y: 100, w: 320, h: 180 };
 const ballStart = { x: cw / 2, y: ch - 60, scale: 1 };
 let ball = { ...ballStart, rotation: 0 };
-let goalie = { x: cw / 2, y: 160, rotation: 0, state: 'idle', color: '#3498db' };
+let goalie = { x: cw / 2, y: 90, rotation: 0, state: 'idle', color: '#f1c40f' }; // Onana yellow/gold shirt
 let player = { x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null };
 
 function drawField() {
@@ -159,21 +161,25 @@ function drawField() {
     ctx.restore();
 }
 
-function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false) {
+function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, scale = 1) {
     ctx.save();
     ctx.translate(x, y);
+    ctx.scale(scale, scale);
     ctx.rotate(rotation);
 
     // Shadow
     ctx.fillStyle = 'rgba(0,0,0,0.2)';
     ctx.beginPath(); ctx.ellipse(0, 45, 20, 8, 0, 0, Math.PI * 2); ctx.fill();
+    
+    // Skin Color (Onana: #4e342e, Player: #f3c19d)
+    const skinColor = isGoalie ? '#4e342e' : '#f3c19d';
 
     // Shirt
     ctx.fillStyle = color;
     ctx.fillRect(-12, 0, 24, 40);
 
     // Limbs
-    ctx.strokeStyle = '#f3c19d';
+    ctx.strokeStyle = skinColor;
     ctx.lineWidth = 6;
     ctx.lineCap = 'round';
 
@@ -185,6 +191,12 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false) 
         ctx.beginPath();
         ctx.moveTo(-6, 40); ctx.lineTo(-15, 52);
         ctx.moveTo(6, 40); ctx.lineTo(15, 52); ctx.stroke();
+    } else if (state === 'running') {
+        const bounce = Math.sin(Date.now() / 50) * 8;
+        ctx.beginPath();
+        ctx.moveTo(-7, 40); ctx.lineTo(-7 - bounce, 55 + Math.abs(bounce));
+        ctx.moveTo(7, 40); ctx.lineTo(7 + bounce, 55 - Math.abs(bounce));
+        ctx.stroke();
     } else {
         ctx.beginPath();
         ctx.moveTo(-7, 40); ctx.lineTo(-7, 55);
@@ -204,18 +216,26 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false) 
         } else {
             ctx.beginPath();
             ctx.moveTo(-12, 10); ctx.lineTo(-25, 25);
+            ctx.moveTo(-12, 10); ctx.lineTo(-25, 25);
             ctx.moveTo(12, 10); ctx.lineTo(25, 25); ctx.stroke();
         }
     } else {
         ctx.beginPath();
-        ctx.moveTo(-12, 10); ctx.lineTo(-20, 30);
-        ctx.moveTo(12, 10); ctx.lineTo(20, 30); ctx.stroke();
+        if (state === 'running') {
+            const swing = Math.sin(Date.now() / 50) * 10;
+            ctx.moveTo(-12, 10); ctx.lineTo(-20 + swing, 30);
+            ctx.moveTo(12, 10); ctx.lineTo(20 - swing, 30);
+        } else {
+            ctx.moveTo(-12, 10); ctx.lineTo(-20, 30);
+            ctx.moveTo(12, 10); ctx.lineTo(20, 30);
+        }
+        ctx.stroke();
     }
 
     // Head
-    ctx.fillStyle = '#f3c19d';
+    ctx.fillStyle = skinColor;
     ctx.beginPath(); ctx.arc(0, -15, 22, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = isGoalie ? '#2c3e50' : '#d35400';
+    ctx.fillStyle = isGoalie ? '#111' : '#d35400'; // Onana hair black
     ctx.beginPath(); ctx.arc(0, -20, 23, Math.PI, 0); ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.beginPath(); ctx.arc(-8, -15, 4, 0, Math.PI * 2); ctx.arc(8, -15, 4, 0, Math.PI * 2); ctx.fill();
@@ -228,6 +248,23 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false) 
     else if (state === 'smile' || state === 'catching') ctx.arc(0, -8, 7, 0, Math.PI);
     else ctx.arc(0, -8, 4, 0.2, Math.PI - 0.2);
     ctx.stroke();
+
+    // Shirt Text (Name & Number)
+    ctx.fillStyle = isGoalie ? '#000' : '#fff'; // Black text on yellow shirt for Onana
+    ctx.textAlign = 'center';
+    
+    // Name
+    const nameToDraw = isGoalie ? 'ONANA' : playerName;
+    const numToDraw = isGoalie ? '24' : playerNumber;
+
+    // Name (Top of shirt) - Dynamic scaling for length
+    let msgFontSize = nameToDraw.length > 6 ? 7 : 9;
+    ctx.font = `800 ${msgFontSize}px Outfit`;
+    ctx.fillText(nameToDraw, 0, 14, 22);
+    
+    // Number (Bottom of shirt)
+    ctx.font = '800 18px Outfit';
+    ctx.fillText(numToDraw, 0, 32, 22);
 
     ctx.restore();
 }
@@ -272,25 +309,44 @@ function drawBall() {
 function drawThoughtBubble(x, y, text) {
     if (!text) return;
     ctx.save();
+    
+    // Set font first to measure correctly
+    ctx.font = '700 13px Outfit';
+    const textWidth = ctx.measureText(text).width;
+    const bubbleWidth = textWidth + 40; // Add padding
+    
     ctx.fillStyle = '#fff';
     ctx.strokeStyle = '#ddd';
     ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.ellipse(x + 60, y - 85, 95, 30, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); ctx.arc(x + 20, y - 50, 8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); ctx.arc(x + 10, y - 30, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    
+    // Position bubble higher or further right depending on scale
+    const bubbleX = x + 80;
+    const bubbleY = y - 90;
+    
+    // Large Bubble
+    ctx.beginPath(); 
+    ctx.ellipse(bubbleX, bubbleY, bubbleWidth / 2, 35, 0, 0, Math.PI * 2); 
+    ctx.fill(); 
+    ctx.stroke();
+    
+    // Small connector circles
+    ctx.beginPath(); ctx.arc(x + 20, y - 55, 8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x + 10, y - 35, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    
     ctx.fillStyle = '#333';
-    ctx.font = '700 13px Outfit';
     ctx.textAlign = 'center';
-    ctx.fillText(text, x + 60, y - 81);
+    ctx.fillText(text, bubbleX, bubbleY + 5); 
+    
     ctx.restore();
 }
 
 function render() {
     drawField();
-    drawChibi(goalie.x, goalie.y, goalie.color, goalie.rotation, goalie.state, true);
-    drawChibi(player.x, player.y, '#e74c3c', 0, player.state);
+    drawChibi(goalie.x, goalie.y, goalie.color, goalie.rotation, goalie.state, true, 1.8);
+    // Enlarge player (1.8x) and keep on canvas
+    drawChibi(player.x, player.y, '#e74c3c', 0, player.state, false, 1.8);
     if (player.thought) {
-        drawThoughtBubble(player.x, player.y, player.thought);
+        drawThoughtBubble(player.x - 40, player.y - 30, player.thought);
     }
     drawBall();
 }
@@ -305,34 +361,54 @@ function animateShot(dir, isGoal, cb) {
     let goalieDiveDir = !isGoal ? dir : (dir + (Math.random() < 0.5 ? 1 : 2)) % 3;
     const goalieTargets = [goalPos.x - 100, goalPos.x, goalPos.x + 100];
     const gTargetX = goalieTargets[goalieDiveDir];
-    let t = 0; player.state = 'kicking';
-    function step() {
-        t += 0.022; // Slightly slower for smoothness
-        const startX = ballStart.x, startY = ballStart.y;
-        ball.x = startX + (target.x - startX) * t;
-        ball.y = startY + (target.y - startY) * t - Math.sin(t * Math.PI) * 120;
-        ball.scale = 1 - t * 0.45;
-        ball.rotation += 0.4;
-        if (t > 0.12) {
-            goalie.state = !isGoal && t > 0.6 ? 'catching' : 'diving';
-            goalie.x += (gTargetX - goalie.x) * 0.12;
-            if (goalieDiveDir === 0) goalie.rotation = -1.1 * (t - 0.12);
-            if (goalieDiveDir === 2) goalie.rotation = 1.1 * (t - 0.12);
-            if (!isGoal && t > 0.82) {
-                ball.x = goalie.x;
-                ball.y = goalie.y - 15;
-            }
-        }
+    
+    let runT = 0;
+    const playerStartX = player.x;
+    const playerTargetX = ball.x - 40;
+
+    function runStep() {
+        runT += 0.05;
+        player.x = playerStartX + (playerTargetX - playerStartX) * runT;
+        player.state = 'running';
         render();
-        if (t < 1) requestAnimationFrame(step);
+        if (runT < 1) requestAnimationFrame(runStep);
         else {
-            player.state = 'idle';
-            if (!isGoal) { goalie.state = 'smile'; ball.x = goalie.x; ball.y = goalie.y - 10; }
-            else goalie.state = 'sad';
-            render(); cb();
+            player.state = 'kicking';
+            startBallShot();
         }
     }
-    step();
+
+    function startBallShot() {
+        let t = 0;
+        function step() {
+            t += 0.022;
+            const startX = ballStart.x, startY = ballStart.y;
+            ball.x = startX + (target.x - startX) * t;
+            ball.y = startY + (target.y - startY) * t - Math.sin(t * Math.PI) * 120;
+            ball.scale = 1 - t * 0.45;
+            ball.rotation += 0.4;
+            if (t > 0.12) {
+                goalie.state = !isGoal && t > 0.6 ? 'catching' : 'diving';
+                goalie.x += (gTargetX - goalie.x) * 0.12;
+                if (goalieDiveDir === 0) goalie.rotation = -1.1 * (t - 0.12);
+                if (goalieDiveDir === 2) goalie.rotation = 1.1 * (t - 0.12);
+                if (!isGoal && t > 0.82) {
+                    ball.x = goalie.x;
+                    ball.y = goalie.y + 40; // Adjust catch position for larger goalie
+                }
+            }
+            render();
+            if (t < 1) requestAnimationFrame(step);
+            else {
+                player.state = 'idle';
+                if (!isGoal) { goalie.state = 'smile'; ball.x = goalie.x; ball.y = goalie.y - 10; }
+                else goalie.state = 'sad';
+                render(); cb();
+            }
+        }
+        step();
+    }
+    runStep();
 }
 
 async function initGame() {
@@ -369,6 +445,12 @@ function selectModule(num) {
 }
 
 function startGame() {
+    const nameInput = document.getElementById('playerNameInput').value.trim();
+    const numInput = document.getElementById('playerNumberInput').value.trim();
+    
+    if (nameInput) playerName = nameInput.toUpperCase();
+    if (numInput) playerNumber = numInput;
+
     gameStarted = true;
     document.getElementById('welcomeScreen').style.display = 'none';
     document.getElementById('gameContainer').style.display = 'flex';
@@ -415,8 +497,8 @@ function showQuestion() {
     }
 
     ball = { ...ballStart, rotation: 0 };
-    goalie = { x: cw / 2, y: 160, rotation: 0, state: 'idle', color: '#3498db' };
-    player = { x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null };
+    goalie = { x: cw / 2, y: 90, rotation: 0, state: 'idle', color: '#f1c40f' };
+    player = { x: cw / 2 - 160, y: ch - 100, state: 'idle', thought: null };
     render();
 }
 
@@ -530,7 +612,7 @@ function useLifeline(type) {
         setTimeout(() => {
             document.getElementById('callMsg').innerText = "À, Anh Độ Mixi đây rồi!";
             document.getElementById('callResult').innerHTML = `Anh bảo đáp án là: <div class="highlight-code">${resultText}</div><span class="extra-msg">"Em đừng có mà chối!"</span>`;
-            player.thought = "Nà ná na na";
+            player.thought = "Nà ná na na. Cảm ơn Anh Độ Mixi!";
             render();
         }, 1500);
     } else if (type === 'wise') {
@@ -539,7 +621,7 @@ function useLifeline(type) {
         setTimeout(() => {
             document.getElementById('wiseMsg').innerText = "Lời khuyên từ nhà thông thái (người Ý):";
             document.getElementById('wiseResult').innerHTML = `Người Ý nói: <div class="highlight-code">${resultText}</div><span class="extra-msg">"Tin chuẩn em nhé!"</span>`;
-            player.thought = "Cảm ơn bác Trông Anh Ngược";
+            player.thought = "Cảm ơn bác Trông Anh Ngược!";
             render();
         }, 1500);
     }
@@ -557,11 +639,11 @@ function showFinalResult() {
 
     if (score >= 6) {
         if (score === 10) picksAllowed = 3;
-        else if (score === 9) picksAllowed = 2;
+        else if (score >= 8) picksAllowed = 2;
         else picksAllowed = 1;
 
         if (score === 10) msg += `BÁ ĐẠO! Bạn được mở 3 bao lì xì! 👑🔥`;
-        else if (score === 9) msg += `TUYỆT VỜI! Bạn được mở 2 bao lì xì! 🚀`;
+        else if (score >= 8) msg += `TUYỆT VỜI! Bạn được mở 2 bao lì xì! 🚀`;
         else msg += `Giỏi lắm! Bạn được mở 1 bao lì xì! 🎁`;
         
         resultDiv.innerText = msg;
