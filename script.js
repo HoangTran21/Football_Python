@@ -1,4 +1,17 @@
 // PENALTY MASTER: Nâng cấp với 50 câu hỏi và trợ giúp!
+// === CẤU HÌNH SUPABASE ===
+const SUPABASE_URL = 'https://djkmfemvlscwhuflghsm.supabase.co'.trim();
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqa21mZW12bHNjd2h1ZmxnaHNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MTczMDAsImV4cCI6MjA5MTI5MzMwMH0.xgtNymE3c8J1Da-BdsHMn4gVmM3FGGYfb1ZbOvVYq7w'.trim();
+
+let supabaseClient;
+try {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log("Supabase Client đã khởi tạo thành công!");
+} catch (e) {
+    console.error("Lỗi khởi tạo Supabase:", e);
+    alert("Không thể kết nối với Supabase. Hãy kiểm tra lại URL và Key!");
+}
+// =========================
 
 // Ngân hàng 50 câu hỏi Python
 const questionBank = [
@@ -93,13 +106,11 @@ let helps = { call: false, wise: false };
 let playerName = "L";
 let playerNumber = "22";
 
-// UI Elements
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const cw = canvas.width;
 const ch = canvas.height;
 
-// Game State
 const goalPos = { x: cw / 2, y: 100, w: 320, h: 180 };
 const ballStart = { x: cw / 2, y: ch - 60, scale: 1 };
 let ball = { ...ballStart, rotation: 0 };
@@ -170,7 +181,7 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     // Shadow
     ctx.fillStyle = 'rgba(0,0,0,0.2)';
     ctx.beginPath(); ctx.ellipse(0, 45, 20, 8, 0, 0, Math.PI * 2); ctx.fill();
-    
+
     // Skin Color (Onana: #4e342e, Player: #f3c19d)
     const skinColor = isGoalie ? '#4e342e' : '#f3c19d';
 
@@ -235,7 +246,7 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     // Head
     ctx.fillStyle = skinColor;
     ctx.beginPath(); ctx.arc(0, -15, 22, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = isGoalie ? '#111' : '#d35400'; // Onana hair black
+    ctx.fillStyle = isGoalie ? '#111' : '#d35400';
     ctx.beginPath(); ctx.arc(0, -20, 23, Math.PI, 0); ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.beginPath(); ctx.arc(-8, -15, 4, 0, Math.PI * 2); ctx.arc(8, -15, 4, 0, Math.PI * 2); ctx.fill();
@@ -250,9 +261,9 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     ctx.stroke();
 
     // Shirt Text (Name & Number)
-    ctx.fillStyle = isGoalie ? '#000' : '#fff'; // Black text on yellow shirt for Onana
+    ctx.fillStyle = isGoalie ? '#000' : '#fff';
     ctx.textAlign = 'center';
-    
+
     // Name
     const nameToDraw = isGoalie ? 'ONANA' : playerName;
     const numToDraw = isGoalie ? '24' : playerNumber;
@@ -261,7 +272,7 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     let msgFontSize = nameToDraw.length > 6 ? 7 : 9;
     ctx.font = `800 ${msgFontSize}px Outfit`;
     ctx.fillText(nameToDraw, 0, 14, 22);
-    
+
     // Number (Bottom of shirt)
     ctx.font = '800 18px Outfit';
     ctx.fillText(numToDraw, 0, 32, 22);
@@ -309,41 +320,40 @@ function drawBall() {
 function drawThoughtBubble(x, y, text) {
     if (!text) return;
     ctx.save();
-    
+
     // Set font first to measure correctly
     ctx.font = '700 13px Outfit';
     const textWidth = ctx.measureText(text).width;
     const bubbleWidth = textWidth + 40; // Add padding
-    
+
     ctx.fillStyle = '#fff';
     ctx.strokeStyle = '#ddd';
     ctx.lineWidth = 2;
-    
+
     // Position bubble higher or further right depending on scale
     const bubbleX = x + 80;
     const bubbleY = y - 90;
-    
+
     // Large Bubble
-    ctx.beginPath(); 
-    ctx.ellipse(bubbleX, bubbleY, bubbleWidth / 2, 35, 0, 0, Math.PI * 2); 
-    ctx.fill(); 
+    ctx.beginPath();
+    ctx.ellipse(bubbleX, bubbleY, bubbleWidth / 2, 35, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.stroke();
-    
+
     // Small connector circles
     ctx.beginPath(); ctx.arc(x + 20, y - 55, 8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.arc(x + 10, y - 35, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    
+
     ctx.fillStyle = '#333';
     ctx.textAlign = 'center';
-    ctx.fillText(text, bubbleX, bubbleY + 5); 
-    
+    ctx.fillText(text, bubbleX, bubbleY + 5);
+
     ctx.restore();
 }
 
 function render() {
     drawField();
     drawChibi(goalie.x, goalie.y, goalie.color, goalie.rotation, goalie.state, true, 1.8);
-    // Enlarge player (1.8x) and keep on canvas
     drawChibi(player.x, player.y, '#e74c3c', 0, player.state, false, 1.8);
     if (player.thought) {
         drawThoughtBubble(player.x - 40, player.y - 30, player.thought);
@@ -361,7 +371,7 @@ function animateShot(dir, isGoal, cb) {
     let goalieDiveDir = !isGoal ? dir : (dir + (Math.random() < 0.5 ? 1 : 2)) % 3;
     const goalieTargets = [goalPos.x - 100, goalPos.x, goalPos.x + 100];
     const gTargetX = goalieTargets[goalieDiveDir];
-    
+
     let runT = 0;
     const playerStartX = player.x;
     const playerTargetX = ball.x - 40;
@@ -394,7 +404,7 @@ function animateShot(dir, isGoal, cb) {
                 if (goalieDiveDir === 2) goalie.rotation = 1.1 * (t - 0.12);
                 if (!isGoal && t > 0.82) {
                     ball.x = goalie.x;
-                    ball.y = goalie.y + 40; // Adjust catch position for larger goalie
+                    ball.y = goalie.y + 40;
                 }
             }
             render();
@@ -416,7 +426,6 @@ async function initGame() {
         const response = await fetch(`module${selectedModule}.json`);
         const data = await response.json();
 
-        // Gộp trắc nghiệm và code thành một danh sách duy nhất
         const mcqs = (data.questions || []).map(q => ({ ...q, type: 'mcq' }));
         const codes = (data.coding_tasks || []).map(q => ({ ...q, type: 'code', m: q.q }));
 
@@ -431,7 +440,6 @@ async function initGame() {
         showQuestion();
     } catch (e) {
         console.error("Lỗi tải câu hỏi:", e);
-        // Fallback if fetch fails
         const bank = selectedModule === 1 ? questionBank : questionBank2;
         activeQuestions = [...bank].sort(() => Math.random() - 0.5).slice(0, 10);
         showQuestion();
@@ -447,7 +455,7 @@ function selectModule(num) {
 function startGame() {
     const nameInput = document.getElementById('playerNameInput').value.trim();
     const numInput = document.getElementById('playerNumberInput').value.trim();
-    
+
     if (nameInput) playerName = nameInput.toUpperCase();
     if (numInput) playerNumber = numInput;
 
@@ -461,7 +469,6 @@ function showQuestion() {
     if (currentQuestion >= 10) { showFinalResult(); return; }
     const q = activeQuestions[currentQuestion];
 
-    // Câu hỏi (m đối với code quest, q đối với mcq)
     const questionText = q.type === 'mcq' ? q.q : q.m;
     document.getElementById('question').innerText = `Câu ${currentQuestion + 1}: ${questionText}`;
 
@@ -475,7 +482,6 @@ function showQuestion() {
     const submitBtn = document.getElementById('submitBtn');
 
     if (q.type === 'mcq') {
-        // Hiển thị trắc nghiệm
         answerInput.style.display = 'none';
         submitBtn.style.display = 'none';
         optsContainer.style.display = 'block';
@@ -489,7 +495,6 @@ function showQuestion() {
             optsContainer.appendChild(btn);
         });
     } else {
-        // Hiển thị viết code
         optsContainer.style.display = 'none';
         answerInput.style.display = 'block';
         submitBtn.style.display = 'inline-block';
@@ -517,11 +522,13 @@ function showGameOver() {
     document.getElementById('questionBox').style.display = 'none';
     document.getElementById('directionBox').style.display = 'none';
     document.getElementById('hint').innerText = '';
-    
+
+    saveScore(playerName, playerNumber, score);
+
     const resultDiv = document.getElementById("result");
     resultDiv.style.color = '#e74c3c';
     resultDiv.innerHTML = `<h3>HẾT LƯỢT! 💔</h3><p>Bạn đã hết tim rồi. Phải bắt đầu lại từ đầu thôi!</p>`;
-    
+
     const restartBtn = document.createElement("button");
     restartBtn.innerText = "Chơi lại từ đầu";
     restartBtn.className = "start-game-btn";
@@ -552,7 +559,6 @@ function submitAnswer() {
     const val = document.getElementById('answer').value.trim();
     const q = activeQuestions[currentQuestion];
 
-    // Convert string regex from JSON back to RegExp if needed
     const regex = typeof q.r === 'string' ? new RegExp(q.r) : q.r;
 
     if (regex.test(val)) {
@@ -597,7 +603,6 @@ function useLifeline(type) {
     document.getElementById(type + 'Btn').classList.add('used');
     const q = activeQuestions[currentQuestion];
 
-    // Quyết định nội dung gợi ý dựa trên loại câu hỏi
     let resultText = "";
     if (q.type === 'mcq') {
         resultText = q.opts[q.ans];
@@ -631,33 +636,35 @@ function closeModal(id) {
     document.getElementById(id).style.display = 'none';
 }
 
+function scrollToPrizes() {
+    closeModal('shotResultModal');
+    document.getElementById('prizes').style.display = 'block';
+    showRedEnvelopes();
+    document.getElementById('prizes').scrollIntoView({ behavior: 'smooth' });
+}
+
 let picksAllowed = 0;
 
 function showFinalResult() {
-    let msg = `KẾT THÚC TRẬN ĐẤU! ⚽\nBạn đã ghi được ${score}/10 bàn thắng.\n`;
-    const resultDiv = document.getElementById("result");
+    let msg = `Bạn đã ghi được <b>${score}/10</b> bàn thắng. `;
+    const openBtn = document.getElementById('openEnvelopesBtn');
+
+    saveScore(playerName, playerNumber, score);
 
     if (score >= 6) {
         if (score === 10) picksAllowed = 3;
         else if (score >= 8) picksAllowed = 2;
         else picksAllowed = 1;
 
-        if (score === 10) msg += `BÁ ĐẠO! Bạn được mở 3 bao lì xì! 👑🔥`;
-        else if (score >= 8) msg += `TUYỆT VỜI! Bạn được mở 2 bao lì xì! 🚀`;
-        else msg += `Giỏi lắm! Bạn được mở 1 bao lì xì! 🎁`;
-        
-        resultDiv.innerText = msg;
-        setTimeout(showRedEnvelopes, 1500);
+        msg += `<br>Phong độ tuyệt vời! Bạn nhận được <b>${picksAllowed}</b> lượt mở bao lì xì. 🔥`;
+        openBtn.style.display = 'inline-block';
     } else {
-        msg += "Tiếc quá! Bạn cần ít nhất 6 bàn để nhận lì xì nhé.";
-        resultDiv.innerText = msg;
-        const restartBtn = document.createElement("button");
-        restartBtn.innerText = "Chơi lại từ đầu";
-        restartBtn.style.marginTop = "20px";
-        restartBtn.onclick = () => location.reload();
-        resultDiv.appendChild(document.createElement("br"));
-        resultDiv.appendChild(restartBtn);
+        msg += "<br>Hơi tiếc một chút! Bạn cần ít nhất 6 bàn để nhận được quà lì xì. Hãy cố gắng hơn nhé! 💪";
+        openBtn.style.display = 'none';
     }
+
+    document.getElementById('shotResultMsg').innerHTML = msg;
+    document.getElementById('shotResultModal').style.display = 'flex';
     document.getElementById("questionBox").style.display = "none";
 }
 
@@ -694,7 +701,6 @@ function openEnvelope(index) {
     const prizeValue = env.querySelector('.prize-value').innerText;
     pickedPrizes.push(prizeValue);
 
-    // Show special image for "Khô gà đè tem"
     if (prizeValue === "Khô gà đè tem") {
         setTimeout(() => {
             document.getElementById('prizeModal').style.display = 'flex';
@@ -702,30 +708,123 @@ function openEnvelope(index) {
     }
 
     if (picksAllowed === 0) {
-        // Show remaining envelopes but dimmed
         document.querySelectorAll('.envelope:not(.opened)').forEach(env => {
             env.classList.add('revealed');
             env.onclick = null;
         });
         document.querySelectorAll('.envelope.opened').forEach(env => env.onclick = null);
 
-        setTimeout(() => {
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = `<h3>CHÚC MỪNG!</h3>Bạn nhận được: <b>${pickedPrizes.join(" & ")}</b>! 🎁<br>`;
+        setTimeout(async () => {
+            document.getElementById('finalPrizeMsg').innerHTML = `Bạn đã cực kỳ may mắn mở được: <br><b style="color:#c0392b; font-size: 1.3rem;">${pickedPrizes.join(" & ")}</b>! 🎁`;
 
-            const restartBtn = document.createElement("button");
-            restartBtn.innerText = "Chơi lại trận mới";
-            restartBtn.style.marginTop = "20px";
-            restartBtn.onclick = () => location.reload();
-            resultDiv.appendChild(restartBtn);
-        }, 1000);
+            try {
+                const { data } = await supabaseClient
+                    .from('leaderboard')
+                    .select('name, jersey_number, score')
+                    .order('score', { ascending: false });
+
+                if (data) {
+                    const myRank = data.findIndex(p => p.name === playerName && p.jersey_number == playerNumber && p.score == score) + 1;
+                    document.getElementById('leaderboardRank').innerText = `Xếp hạng của bạn: #${myRank > 0 ? myRank : '?'}`;
+                }
+            } catch (err) {
+                console.error("Lỗi lấy thứ hạng:", err);
+            }
+
+            document.getElementById('finalPrizeModal').style.display = 'flex';
+        }, 1200);
     } else {
-        document.getElementById("result").innerText = `Bạn vừa mở: ${prizeValue}! Hãy chọn bao lì xì thứ hai! 🔥`;
+        document.getElementById("result").innerText = `Đã mở: ${prizeValue}! Còn ${picksAllowed} lượt chọn nữa. 🔥`;
     }
 }
 
 
 
 window.onload = function () {
-    // Chờ người dùng nhấn chọn Module và Bắt đầu ở Welcome Screen
+    renderLeaderboard();
 };
+
+async function renderLeaderboard() {
+    const listElement = document.getElementById('leaderboardList');
+    if (!listElement) return;
+
+    try {
+        const { data: leaderboard, error } = await supabaseClient
+            .from('leaderboard')
+            .select('*')
+            .order('score', { ascending: false })
+            .limit(10);
+
+        if (error) throw error;
+
+        if (!leaderboard || leaderboard.length === 0) {
+            listElement.innerHTML = '<div class="empty-state">Chưa có dữ liệu xếp hạng</div>';
+            return;
+        }
+
+        listElement.innerHTML = leaderboard.map((player, index) => {
+            let rankIcon = index + 1;
+            if (index === 0) rankIcon = "🥇";
+            else if (index === 1) rankIcon = "🥈";
+            else if (index === 2) rankIcon = "🥉";
+
+            const displayDate = player.created_at ? new Date(player.created_at).toLocaleString('vi-VN') : 'Mới';
+
+            return `
+                <div class="leader-item">
+                    <div class="rank">${rankIcon}</div>
+                    <div class="leader-info">
+                        <span class="leader-name">${player.name} #${player.jersey_number}</span>
+                        <span class="leader-meta">${displayDate}</span>
+                    </div>
+                    <div class="leader-score">${player.score}</div>
+                </div>
+            `;
+        }).join('');
+    } catch (err) {
+        console.error("Lỗi khi tải bảng xếp hạng:", err);
+        listElement.innerHTML = '<div class="empty-state" style="color:#e74c3c">Lỗi kết nối bảng xếp hạng</div>';
+    }
+}
+
+async function saveScore(name, jerseyNumber, score) {
+    const jNum = parseInt(jerseyNumber, 10) || 0;
+
+    try {
+        const { data: records, error: fetchError } = await supabaseClient
+            .from('leaderboard')
+            .select('*')
+            .eq('name', name)
+            .eq('jersey_number', jNum)
+            .order('score', { ascending: false })
+            .limit(1);
+
+        if (fetchError) throw fetchError;
+
+        const existing = records && records.length > 0 ? records[0] : null;
+
+        if (existing) {
+            if (score > existing.score) {
+                const { error: updateError } = await supabaseClient
+                    .from('leaderboard')
+                    .update({ score })
+                    .eq('id', existing.id);
+                if (updateError) throw updateError;
+                console.log("Cập nhật điểm thành công!");
+            }
+        } else {
+            const { error: insertError } = await supabaseClient
+                .from('leaderboard')
+                .insert([{ name, jersey_number: jNum, score }]);
+            if (insertError) throw insertError;
+            console.log("Lưu điểm mới thành công!");
+        }
+
+        renderLeaderboard();
+    } catch (err) {
+        console.error("Lỗi Supabase chi tiết:", err);
+        const errorMsg = err.message || (typeof err === 'string' ? err : 'Lỗi không xác định');
+        alert("LƯU ĐIỂM THẤT BẠI!\n\nMã lỗi: " + errorMsg + "\n\nLời khuyên: Bạn hãy nhấn F12 (hoặc Chuột phải -> Kiểm tra) và xem tab 'Console' để thấy chi tiết lỗi màu đỏ nhé!");
+    }
+}
+
