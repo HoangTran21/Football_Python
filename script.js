@@ -611,6 +611,11 @@ function useLifeline(type) {
     }
 
     if (type === 'call') {
+        const audio = document.getElementById('callAudio');
+        if (audio) {
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio play failed:", e));
+        }
         document.getElementById('callModal').style.display = 'flex';
         document.getElementById('callMsg').innerText = "Số này của ai ấy nhỉ?...";
         document.getElementById('callResult').innerText = "";
@@ -621,6 +626,11 @@ function useLifeline(type) {
             render();
         }, 1500);
     } else if (type === 'wise') {
+        const audio = document.getElementById('wiseAudio');
+        if (audio) {
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio play failed:", e));
+        }
         document.getElementById('wiseModal').style.display = 'flex';
         document.getElementById('wiseResult').innerText = "";
         setTimeout(() => {
@@ -634,6 +644,25 @@ function useLifeline(type) {
 
 function closeModal(id) {
     document.getElementById(id).style.display = 'none';
+    if (id === 'callModal') {
+        const audio = document.getElementById('callAudio');
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    } else if (id === 'wiseModal') {
+        const audio = document.getElementById('wiseAudio');
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    } else if (id === 'finalPrizeModal') {
+        const audio = document.getElementById('winAudio');
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    }
 }
 
 function scrollToPrizes() {
@@ -715,6 +744,11 @@ function openEnvelope(index) {
         document.querySelectorAll('.envelope.opened').forEach(env => env.onclick = null);
 
         setTimeout(async () => {
+            const winAudio = document.getElementById('winAudio');
+            if (winAudio) {
+                winAudio.currentTime = 0;
+                winAudio.play().catch(e => console.log("Win audio play failed:", e));
+            }
             document.getElementById('finalPrizeMsg').innerHTML = `Bạn đã cực kỳ may mắn mở được: <br><b style="color:#c0392b; font-size: 1.3rem;">${pickedPrizes.join(" & ")}</b>! 🎁`;
 
             try {
@@ -748,10 +782,13 @@ async function renderLeaderboard() {
     const listElement = document.getElementById('leaderboardList');
     if (!listElement) return;
 
+    const filterVal = document.getElementById('leaderboardFilter')?.value || "1";
+
     try {
         const { data: leaderboard, error } = await supabaseClient
             .from('leaderboard')
             .select('*')
+            .eq('module', filterVal)
             .order('score', { ascending: false })
             .limit(10);
 
@@ -787,15 +824,16 @@ async function renderLeaderboard() {
     }
 }
 
-async function saveScore(name, jerseyNumber, score) {
+async function saveScore(name, jerseyNumber, finalScore) {
     const jNum = parseInt(jerseyNumber, 10) || 0;
-
     try {
+        // 1. Tìm bản ghi hiện có của người chơi này trong module hiện tại
         const { data: records, error: fetchError } = await supabaseClient
             .from('leaderboard')
             .select('*')
             .eq('name', name)
             .eq('jersey_number', jNum)
+            .eq('module', selectedModule.toString())
             .order('score', { ascending: false })
             .limit(1);
 
@@ -804,22 +842,27 @@ async function saveScore(name, jerseyNumber, score) {
         const existing = records && records.length > 0 ? records[0] : null;
 
         if (existing) {
-            if (score > existing.score) {
+            if (finalScore > existing.score) {
                 const { error: updateError } = await supabaseClient
                     .from('leaderboard')
-                    .update({ score })
+                    .update({ score: finalScore })
                     .eq('id', existing.id);
                 if (updateError) throw updateError;
                 console.log("Cập nhật điểm thành công!");
             }
         } else {
+            // 3. Nếu chưa tồn tại, thêm bản ghi mới kèm thông tin module
             const { error: insertError } = await supabaseClient
                 .from('leaderboard')
-                .insert([{ name, jersey_number: jNum, score }]);
+                .insert([{ name, jersey_number: jNum, score: finalScore, module: selectedModule.toString() }]);
             if (insertError) throw insertError;
             console.log("Lưu điểm mới thành công!");
         }
 
+        // Sau khi lưu, cập nhật filter của bảng xếp hạng về module vừa chơi để người chơi thấy điểm của mình
+        if (document.getElementById('leaderboardFilter')) {
+            document.getElementById('leaderboardFilter').value = selectedModule.toString();
+        }
         renderLeaderboard();
     } catch (err) {
         console.error("Lỗi Supabase chi tiết:", err);

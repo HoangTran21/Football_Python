@@ -68,6 +68,10 @@
             <div class="leaderboard-card">
                 <div class="leaderboard-header">
                     <h3>🏆 BẢNG XẾP HẠNG</h3>
+                    <select id="leaderboardFilter" onchange="renderLeaderboard()" class="leader-select">
+                        <option value="1">Module 1</option>
+                        <option value="2">Module 2</option>
+                    </select>
                 </div>
                 <div id="leaderboardList" class="leaderboard-list">
                     <div class="empty-state">Chưa có dữ liệu xếp hạng</div>
@@ -196,6 +200,11 @@
         </div>
 
     </div>
+    <!-- Âm thanh -->
+    <audio id="callAudio" src="music/call.mp3"></audio>
+    <audio id="wiseAudio" src="music/wise.mp3"></audio>
+    <audio id="winAudio" src="music/win.mp3"></audio>
+
     <script src="script.js"></script>
 </body>
 
