@@ -106,6 +106,17 @@ let helps = { call: false, wise: false };
 let playerName = "L";
 let playerNumber = "22";
 
+const characterConfigs = [
+    { name: "Cơ Bản", skin: "#f3c19d", hair: "#d35400", shirt: "#e74c3c", number: "10", hairStyle: 0 },
+    { name: "Sáng", skin: "#ffdbac", hair: "#2c3e50", shirt: "#2980b9", number: "19", hairStyle: 1 },
+    { name: "Ngăm", skin: "#8d5524", hair: "#111", shirt: "#27ae60", number: "90", hairStyle: 2 },
+    { name: "Trẻ", skin: "#ffdbac", hair: "#e67e22", shirt: "#f1c40f", number: "7", hairStyle: 3 },
+    { name: "Lạnh", skin: "#f3c19d", hair: "#34495e", shirt: "#ffffff", number: "11", hairStyle: 4 },
+    { name: "Đậm", skin: "#4e342e", hair: "#111", shirt: "#333333", number: "24", hairStyle: 1 }
+];
+let characterIndex = 0;
+let selectedShirtColor = '#e74c3c';
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const cw = canvas.width;
@@ -114,8 +125,16 @@ const ch = canvas.height;
 const goalPos = { x: cw / 2, y: 100, w: 320, h: 180 };
 const ballStart = { x: cw / 2, y: ch - 60, scale: 1 };
 let ball = { ...ballStart, rotation: 0 };
-let goalie = { x: cw / 2, y: 90, rotation: 0, state: 'idle', color: '#f1c40f' }; // Onana yellow/gold shirt
-let player = { x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null };
+let goalie = { 
+    x: cw / 2, y: 90, rotation: 0, state: 'idle', 
+    shirt: '#f1c40f', skin: '#4e342e', hair: '#111', 
+    name: 'ONANA', number: '24' 
+};
+let player = { 
+    x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null,
+    shirt: '#e74c3c', skin: '#f3c19d', hair: '#d35400',
+    name: 'NIÊN BÉO', number: '10', hairStyle: 0
+};
 
 function drawField() {
     // Pitch
@@ -172,7 +191,8 @@ function drawField() {
     ctx.restore();
 }
 
-function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, scale = 1) {
+function drawChibi(char, rotation = 0, scale = 1) {
+    const { x, y, shirt, skin, hair, name, number, state } = char;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(scale, scale);
@@ -182,11 +202,11 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     ctx.fillStyle = 'rgba(0,0,0,0.2)';
     ctx.beginPath(); ctx.ellipse(0, 45, 20, 8, 0, 0, Math.PI * 2); ctx.fill();
 
-    // Skin Color (Onana: #4e342e, Player: #f3c19d)
-    const skinColor = isGoalie ? '#4e342e' : '#f3c19d';
+    // Skin Color
+    const skinColor = skin;
 
     // Shirt
-    ctx.fillStyle = color;
+    ctx.fillStyle = shirt;
     ctx.fillRect(-12, 0, 24, 40);
 
     // Limbs
@@ -215,6 +235,7 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     }
 
     // Arms
+    const isGoalie = name === 'ONANA';
     if (isGoalie) {
         if (state === 'diving') {
             ctx.beginPath();
@@ -226,7 +247,6 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
             ctx.moveTo(12, 12); ctx.lineTo(20, -10); ctx.stroke();
         } else {
             ctx.beginPath();
-            ctx.moveTo(-12, 10); ctx.lineTo(-25, 25);
             ctx.moveTo(-12, 10); ctx.lineTo(-25, 25);
             ctx.moveTo(12, 10); ctx.lineTo(25, 25); ctx.stroke();
         }
@@ -246,8 +266,37 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     // Head
     ctx.fillStyle = skinColor;
     ctx.beginPath(); ctx.arc(0, -15, 22, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = isGoalie ? '#111' : '#d35400';
-    ctx.beginPath(); ctx.arc(0, -20, 23, Math.PI, 0); ctx.fill();
+
+    // Hair Style Drawing
+    ctx.fillStyle = hair;
+    const style = char.hairStyle || 0;
+    if (style === 1) { // Spiky
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            const angle = Math.PI + (i * Math.PI) / 5;
+            const x = Math.cos(angle) * 25;
+            const y = -15 + Math.sin(angle) * 25;
+            ctx.lineTo(x, y);
+            const midAngle = angle + Math.PI / 10;
+            ctx.lineTo(Math.cos(midAngle) * 18, -15 + Math.sin(midAngle) * 18);
+        }
+        ctx.fill();
+    } else if (style === 2) { // Side-swept
+        ctx.beginPath();
+        ctx.arc(0, -20, 23, Math.PI * 0.8, Math.PI * 2.2);
+        ctx.lineTo(15, -10);
+        ctx.fill();
+    } else if (style === 3) { // Center-parted
+        ctx.beginPath();
+        ctx.arc(-8, -20, 18, Math.PI, 0);
+        ctx.arc(8, -20, 18, Math.PI, 0);
+        ctx.fill();
+    } else if (style === 4) { // Buzz cut
+        ctx.beginPath(); ctx.arc(0, -17, 23, Math.PI, 0); ctx.fill();
+    } else { // Style 0: Classic Bowl
+        ctx.beginPath(); ctx.arc(0, -20, 23, Math.PI, 0); ctx.fill();
+    }
+
     ctx.fillStyle = '#fff';
     ctx.beginPath(); ctx.arc(-8, -15, 4, 0, Math.PI * 2); ctx.arc(8, -15, 4, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#333';
@@ -264,9 +313,8 @@ function drawChibi(x, y, color, rotation = 0, state = 'idle', isGoalie = false, 
     ctx.fillStyle = isGoalie ? '#000' : '#fff';
     ctx.textAlign = 'center';
 
-    // Name
-    const nameToDraw = isGoalie ? 'ONANA' : playerName;
-    const numToDraw = isGoalie ? '24' : playerNumber;
+    const nameToDraw = name;
+    const numToDraw = number;
 
     // Name (Top of shirt) - Dynamic scaling for length
     let msgFontSize = nameToDraw.length > 6 ? 7 : 9;
@@ -353,8 +401,8 @@ function drawThoughtBubble(x, y, text) {
 
 function render() {
     drawField();
-    drawChibi(goalie.x, goalie.y, goalie.color, goalie.rotation, goalie.state, true, 1.8);
-    drawChibi(player.x, player.y, '#e74c3c', 0, player.state, false, 1.8);
+    drawChibi(goalie, goalie.rotation, 1.8);
+    drawChibi(player, 0, 1.8);
     if (player.thought) {
         drawThoughtBubble(player.x - 40, player.y - 30, player.thought);
     }
@@ -452,12 +500,32 @@ function selectModule(num) {
     document.getElementById('mod' + num).classList.add('active');
 }
 
+function selectChar(idx) {
+    characterIndex = idx;
+    document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('char' + idx).classList.add('active');
+}
+
+function selectShirt(color, el) {
+    selectedShirtColor = color;
+    document.querySelectorAll('.shirt-color').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+
 function startGame() {
     const nameInput = document.getElementById('playerNameInput').value.trim();
     const numInput = document.getElementById('playerNumberInput').value.trim();
 
-    if (nameInput) playerName = nameInput.toUpperCase();
-    if (numInput) playerNumber = numInput;
+    const charConfig = characterConfigs[characterIndex];
+    player.name = nameInput ? nameInput.toUpperCase() : "NGHĨA BÉO";
+    player.number = numInput || "10";
+    player.skin = charConfig.skin;
+    player.hair = charConfig.hair;
+    player.hairStyle = charConfig.hairStyle;
+    player.shirt = selectedShirtColor;
+
+    playerName = player.name;
+    playerNumber = player.number;
 
     gameStarted = true;
     document.getElementById('welcomeScreen').style.display = 'none';
@@ -502,8 +570,8 @@ function showQuestion() {
     }
 
     ball = { ...ballStart, rotation: 0 };
-    goalie = { x: cw / 2, y: 90, rotation: 0, state: 'idle', color: '#f1c40f' };
-    player = { x: cw / 2 - 160, y: ch - 100, state: 'idle', thought: null };
+    goalie.x = cw / 2; goalie.y = 90; goalie.rotation = 0; goalie.state = 'idle';
+    player.x = cw / 2 - 160; player.y = ch - 100; player.state = 'idle'; player.thought = null;
     render();
 }
 

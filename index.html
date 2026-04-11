@@ -54,14 +54,53 @@
 
                 <div class="player-start-bar">
                     <div class="input-group">
-                        <label>Tên</label>
+                        <label>Tên người chơi</label>
                         <input type="text" id="playerNameInput" placeholder="Nghĩa Béo" value="Nghĩa Béo">
                     </div>
                     <div class="input-group">
                         <label>Số áo</label>
-                        <input type="number" id="playerNumberInput" min="1" max="99" value="67">
+                        <input type="number" id="playerNumberInput" min="1" max="99" value="10">
                     </div>
-                    <button class="start-game-btn horizontal" onclick="startGame()">BẮT ĐẦU CHINH PHỤC</button>
+                </div>
+
+                <div class="character-selection">
+                    <h3>👤 CHỌN DIỆN MẠO</h3>
+                    <div class="char-options">
+                        <div class="char-card active" onclick="selectChar(0)" id="char0">
+                            <div class="char-avatar skin-1"><div class="hair-style-0"></div></div>
+                        </div>
+                        <div class="char-card" onclick="selectChar(1)" id="char1">
+                            <div class="char-avatar skin-2"><div class="hair-style-1"></div></div>
+                        </div>
+                        <div class="char-card" onclick="selectChar(2)" id="char2">
+                            <div class="char-avatar skin-3"><div class="hair-style-2"></div></div>
+                        </div>
+                        <div class="char-card" onclick="selectChar(3)" id="char3">
+                            <div class="char-avatar skin-2"><div class="hair-style-3"></div></div>
+                        </div>
+                        <div class="char-card" onclick="selectChar(4)" id="char4">
+                            <div class="char-avatar skin-1"><div class="hair-style-4"></div></div>
+                        </div>
+                        <div class="char-card" onclick="selectChar(5)" id="char5">
+                            <div class="char-avatar skin-4"><div class="hair-style-1"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shirt-selection">
+                    <h3>👕 CHỌN MÀU ÁO</h3>
+                    <div class="shirt-options">
+                        <div class="shirt-color active" onclick="selectShirt('#e74c3c', this)" style="background: #e74c3c"></div>
+                        <div class="shirt-color" onclick="selectShirt('#3498db', this)" style="background: #3498db"></div>
+                        <div class="shirt-color" onclick="selectShirt('#2ecc71', this)" style="background: #2ecc71"></div>
+                        <div class="shirt-color" onclick="selectShirt('#f1c40f', this)" style="background: #f1c40f"></div>
+                        <div class="shirt-color" onclick="selectShirt('#ffffff', this)" style="background: #ffffff"></div>
+                        <div class="shirt-color" onclick="selectShirt('#333333', this)" style="background: #333333"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <button class="start-game-btn" style="width: 100%; border-radius: 20px;" onclick="startGame()">BẮT ĐẦU CHINH PHỤC</button>
                 </div>
             </div>
 
