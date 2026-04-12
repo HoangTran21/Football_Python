@@ -811,9 +811,12 @@ function openEnvelope(index) {
     }
 
     if (picksAllowed === 0) {
-        document.querySelectorAll('.envelope:not(.opened)').forEach(env => {
-            env.classList.add('revealed');
-            env.onclick = null;
+        document.getElementById("result").innerText = `Đã hết lượt mở! Hãy xem những phần quà bạn đã bỏ lỡ...`;
+        document.querySelectorAll('.envelope:not(.opened)').forEach((env, i) => {
+            setTimeout(() => {
+                env.classList.add('revealed');
+                env.onclick = null;
+            }, i * 200); // Stagger the reveal for better effect
         });
         document.querySelectorAll('.envelope.opened').forEach(env => env.onclick = null);
 
@@ -840,7 +843,7 @@ function openEnvelope(index) {
             }
 
             document.getElementById('finalPrizeModal').style.display = 'flex';
-        }, 1200);
+        }, 4000);
     } else {
         document.getElementById("result").innerText = `Đã mở: ${prizeValue}! Còn ${picksAllowed} lượt chọn nữa. 🔥`;
     }

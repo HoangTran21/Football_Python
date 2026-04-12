@@ -206,16 +206,16 @@ button:hover {
 }
 
 .envelope.revealed {
-    background: rgba(255, 255, 255, 0.4) !important;
-    transform: rotateY(180px) scale(0.9);
-    border: 2px dashed #ccc;
-    opacity: 0.6;
-    filter: grayscale(0.5);
-    transition: all 1s ease;
+    background: rgba(255, 255, 255, 0.8) !important;
+    transform: rotateY(180px) scale(0.85);
+    border: 2px solid #bdc3c7;
+    opacity: 0.9;
+    filter: none;
+    transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .envelope.revealed .prize-content {
-    opacity: 0.5;
+    opacity: 0.8;
 }
 
 .prize-icon {
