@@ -49,6 +49,11 @@
                             <h4>Module 2</h4>
                             <p>Cấu trúc dữ liệu (List, Dict, Set) & Giải thuật</p>
                         </div>
+                        <div class="module-card" id="mod3" onclick="selectModule(3)">
+                            <div class="mod-icon">🧠</div>
+                            <h4>Module 3</h4>
+                            <p>Thuật toán Nâng cao (Dict, Set, Tuple, Map, Zip)</p>
+                        </div>
                     </div>
                 </div>
 
@@ -129,6 +134,7 @@
                     <select id="leaderboardFilter" onchange="renderLeaderboard()" class="leader-select">
                         <option value="1">Module 1</option>
                         <option value="2">Module 2</option>
+                        <option value="3">Module 3</option>
                     </select>
                 </div>
                 <div id="leaderboardList" class="leaderboard-list">
@@ -262,6 +268,7 @@
     <audio id="callAudio" src="music/call.mp3"></audio>
     <audio id="wiseAudio" src="music/wise.mp3"></audio>
     <audio id="winAudio" src="music/win2.mp3"></audio>
+    <audio id="looseAudio" src="music/lose.mp3"></audio>
 
     <script src="script.js"></script>
 </body>

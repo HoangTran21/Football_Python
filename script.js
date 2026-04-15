@@ -94,6 +94,19 @@ const questionBank2 = [
     { m: "Câu lệnh pass (không làm gì cả)", r: /\bpass\b/, h: "pass", w: "Dùng pass khi bạn muốn để trống một khối lệnh." }
 ];
 
+const questionBank3 = [
+    { m: "Kết hợp 2 list k, v thành dict", r: /dict\s*\(\s*zip\s*\(\s*k\s*,\s*v\s*\)\s*\)/, h: "dict(zip(k, v))", w: "Nhà thông thái: 'Zip kết hợp, Dict chuyển đổi nhé!'" },
+    { m: "Tính tuổi: nam_nay - nam_sinh", r: /nam_nay\s*-\s*nam_sinh/, h: "nam_nay - nam_sinh", w: "Đơn giản là lấy năm hiện tại trừ năm sinh thôi." },
+    { m: "Nhân đôi list a dùng map và lambda", r: /map\s*\(\s*lambda\s+x\s*:\s*x\s*\*\s*2\s*,\s*a\s*\)/, h: "map(lambda x: x*2, a)", w: "Map áp dụng hàm cho từng phần tử." },
+    { m: "Lấy giá trị key 'x' trong d, mặc định 0", r: /d\.get\s*\(\s*['\"]x['\"]\s*,\s*0\s*\)/, h: "d.get('x', 0)", w: "Get giúp tránh lỗi khi không tìm thấy khóa." },
+    { m: "Lọc số > 5 từ list a dùng filter", r: /filter\s*\(\s*lambda\s+x\s*:\s*x\s*>\s*5\s*,\s*a\s*\)/, h: "filter(lambda x: x > 5, a)", w: "Filter giữ lại các phần tử thỏa mãn điều kiện." },
+    { m: "Tạo set các số lẻ từ 1-9", r: /\{\s*x\s*for\s+x\s+in\s+range\s*\(\s*1\s*,\s*10\s*\)\s+if\s+x\s*%\s*2\s*!=\s*0\s*\}/, h: "{x for x in range(1, 10) if x%2 != 0}", w: "Set comprehension với điều kiện if." },
+    { m: "Đảo ngược tuple t", r: /t\s*\[\s*:\s*:\s*-1\s*\]/, h: "t[::-1]", w: "Kỹ thuật slicing hoạt động cả với tuple." },
+    { m: "Gộp 2 dict d1, d2", r: /d1\s*\|\s*d2/, h: "d1 | d2", w: "Toán tử | (union) cho dict có từ Python 3.9." },
+    { m: "Giải nén ma trận matrix dùng zip", r: /zip\s*\(\s*\*\s*matrix\s*\)/, h: "zip(*matrix)", w: "Sử dụng * để giải nén hàng thành các đối số." },
+    { m: "Kiểm tra chuỗi s là số", r: /s\.isdigit\s*\(\s*\)/, h: "s.isdigit()", w: "Hàm này cực kỳ hữu ích để validate dữ liệu." }
+];
+
 let selectedModule = 1;
 let activeQuestions = [];
 const directions = ["Góc Trái", "Chính Giữa", "Góc Phải"];
@@ -125,12 +138,12 @@ const ch = canvas.height;
 const goalPos = { x: cw / 2, y: 100, w: 320, h: 180 };
 const ballStart = { x: cw / 2, y: ch - 60, scale: 1 };
 let ball = { ...ballStart, rotation: 0 };
-let goalie = { 
-    x: cw / 2, y: 90, rotation: 0, state: 'idle', 
-    shirt: '#f1c40f', skin: '#4e342e', hair: '#111', 
-    name: 'ONANA', number: '24' 
+let goalie = {
+    x: cw / 2, y: 90, rotation: 0, state: 'idle',
+    shirt: '#f1c40f', skin: '#4e342e', hair: '#111',
+    name: 'ONANA', number: '24'
 };
-let player = { 
+let player = {
     x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null,
     shirt: '#e74c3c', skin: '#f3c19d', hair: '#d35400',
     name: 'NIÊN BÉO', number: '10', hairStyle: 0
@@ -488,7 +501,11 @@ async function initGame() {
         showQuestion();
     } catch (e) {
         console.error("Lỗi tải câu hỏi:", e);
-        const bank = selectedModule === 1 ? questionBank : questionBank2;
+        let bank;
+        if (selectedModule === 1) bank = questionBank;
+        else if (selectedModule === 2) bank = questionBank2;
+        else bank = questionBank3;
+
         activeQuestions = [...bank].sort(() => Math.random() - 0.5).slice(0, 10);
         showQuestion();
     }
@@ -597,20 +614,24 @@ function showGameOver() {
     document.getElementById('directionBox').style.display = 'none';
     document.getElementById('hint').innerText = '';
 
+    const looseAudio = document.getElementById('looseAudio');
+    if (looseAudio) {
+        looseAudio.currentTime = 0;
+        looseAudio.play().catch(e => console.log("Loose audio play failed:", e));
+    }
+
     saveScore(playerName, playerNumber, score);
 
     const resultDiv = document.getElementById("result");
     resultDiv.style.color = '#e74c3c';
-    resultDiv.innerHTML = `<h3>HẾT LƯỢT! 💔</h3><p>Bạn đã hết tim rồi. Phải bắt đầu lại từ đầu thôi!</p>`;
-
-    const restartBtn = document.createElement("button");
-    restartBtn.innerText = "Chơi lại từ đầu";
-    restartBtn.className = "start-game-btn";
-    restartBtn.style.marginTop = "20px";
-    restartBtn.style.width = "auto";
-    restartBtn.style.padding = "10px 30px";
-    restartBtn.onclick = () => location.reload();
-    resultDiv.appendChild(restartBtn);
+    resultDiv.innerHTML = `
+        <div class="game-over-container" style="text-align: center; background: rgba(255,255,255,0.9); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-top: 20px;">
+            <img src="img/batluc.jpg" alt="Game Over" style="width: 450px; max-width: 90%; border-radius: 10px; margin-bottom: 15px; border: 3px solid #e74c3c;">
+            <h3 style="margin: 0; font-size: 24px;">HẾT LƯỢT! 💔</h3>
+             <p style="font-size: 18px; margin: 10px 0;">Bạn đã hết tim rồi. Phải bắt đầu lại thôi!</p>
+            <button class="start-game-btn" style="width: auto; padding: 10px 40px; margin-top: 10px;" onclick="location.reload()"> CHƠI LẠI </button>
+        </div>
+    `;
 }
 
 function checkMCQ(idx) {
@@ -776,11 +797,12 @@ function showRedEnvelopes() {
     const container = document.getElementById("envelopeContainer");
     container.innerHTML = '';
     const prizes = [
-        { name: "10.000 VND", icon: "💵" },
+        { name: "5.000 VND", icon: "💵" },
         { name: "Ra chơi sớm 5 phút", icon: "🔔" },
         { name: "Chúc bạn may mắn lần sau", icon: "🍀" },
         { name: "Khô gà đè tem", icon: "🍗" },
-        { name: "Ra chơi sớm 10 phút", icon: "🔔" }
+        { name: "Khô gà đè tem", icon: "🍗" },
+        { name: "Chúc bạn may mắn lần sau", icon: "🍀" },
     ];
     prizes.sort(() => Math.random() - 0.5);
     prizes.forEach((prize, index) => {

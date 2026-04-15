@@ -1,0 +1,368 @@
+{
+    "title": "Kiem_tra_module_3_Python_Advanced_Algorithms",
+    "time_seconds": 7200,
+    "questions": [
+        {
+            "q": "Kết quả của dict(zip(['a', 'b'], [1, 2, 3])) là gì?",
+            "opts": [
+                "{'a': 1, 'b': 2}",
+                "{'a': 1, 'b': 2, 'c': 3}",
+                "Lỗi (Error)",
+                "{'a': 1, 'b': 2, None: 3}"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Hàm map(lambda x: x**2, [1, 2, 3]) trả về kiểu dữ liệu gì trong Python 3?",
+            "opts": [
+                "List",
+                "Tuple",
+                "Map object (iterator)",
+                "Set"
+            ],
+            "ans": 2
+        },
+        {
+            "q": "Làm thế nào để tính tuổi nếu biết nam_sinh và nam_hien_tai?",
+            "opts": [
+                "tuoi = nam_sinh - nam_hien_tai",
+                "tuoi = nam_hien_tai - nam_sinh",
+                "tuoi = nam_hien_tai + nam_sinh",
+                "tuoi = nam_hien_tai / nam_sinh"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Toán tử nào dùng để lấy phần bù đối xứng (Symmetric Difference) của hai tập hợp (set)?",
+            "opts": [
+                "&",
+                "|",
+                "-",
+                "^"
+            ],
+            "ans": 3
+        },
+        {
+            "q": "Kết quả của {x: x**2 for x in (1, 2, 3)} là gì?",
+            "opts": [
+                "{1, 4, 9}",
+                "[1, 4, 9]",
+                "{1: 1, 2: 4, 3: 9}",
+                "(1, 4, 9)"
+            ],
+            "ans": 2
+        },
+        {
+            "q": "Để gộp hai danh sách list1 và list2 thành một danh sách các tuple, ta dùng hàm nào?",
+            "opts": [
+                "combine()",
+                "zip()",
+                "merge()",
+                "join()"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Lệnh nào dùng để lấy giá trị của key 'k' trong dict 'd', nếu không có thì trả về 0?",
+            "opts": [
+                "d['k']",
+                "d.get('k', 0)",
+                "d.find('k', 0)",
+                "d.fetch('k', 0)"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Cho a = [1, 2] và b = a.copy(). Nếu thay đổi a[0] = 9 thì b[0] là bao nhiêu?",
+            "opts": [
+                "9",
+                "1",
+                "Lỗi",
+                "None"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Hàm enumerate(['A', 'B'], start=1) sẽ bắt đầu đánh chỉ số từ mấy?",
+            "opts": [
+                "0",
+                "1",
+                "2",
+                "-1"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Cách nào để đảo ngược một tuple t = (1, 2, 3)?",
+            "opts": [
+                "t.reverse()",
+                "t[::-1]",
+                "reverse(t)",
+                "t.flip()"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Kết quả của all([True, 1, 'hello']) là gì?",
+            "opts": [
+                "True",
+                "False",
+                "1",
+                "Error"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Trong Python, 'tuple unpacking' a, b = (1, 2) có nghĩa là gì?",
+            "opts": [
+                "Tạo một tuple mới",
+                "Gán 1 cho a và 2 cho b",
+                "Gán (1, 2) cho cả a và b",
+                "Xóa tuple"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Để chuyển một danh sách các chuỗi thành một chuỗi duy nhất cách nhau bởi dấu phẩy, ta dùng?",
+            "opts": [
+                "','.join(list)",
+                "list.join(',')",
+                "str(list)",
+                "comb(list, ',')"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Hàm filter(lambda x: x > 0, [-1, 1, 0]) trả về các giá trị nào?",
+            "opts": [
+                "[1, 0]",
+                "[1]",
+                "[-1, 1, 0]",
+                "True"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Để đếm số lần xuất hiện của các phần tử trong list, thư viện nào hỗ trợ tốt nhất?",
+            "opts": [
+                "math",
+                "random",
+                "collections (Counter)",
+                "os"
+            ],
+            "ans": 2
+        },
+        {
+            "q": "Kết quả của [x for x in range(5) if x % 2 == 0] là gì?",
+            "opts": [
+                "[0, 2, 4]",
+                "[1, 3]",
+                "[0, 1, 2, 3, 4, 5]",
+                "[2, 4]"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Lệnh nào tạo ra một shallow copy của list L?",
+            "opts": [
+                "L[:]",
+                "std.copy(L)",
+                "L.clone()",
+                "L.all()"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Trong dictionary, key có thể là kiểu dữ liệu nào?",
+            "opts": [
+                "List",
+                "Set",
+                "Tuple (chứa các thành phần immutable)",
+                "Dictionary"
+            ],
+            "ans": 2
+        },
+        {
+            "q": "Hàm zip(*[(1, 2), (3, 4)]) sẽ trả về cấu trúc tương đương với?",
+            "opts": [
+                "[(1, 3), (2, 4)]",
+                "[(1, 2), (3, 4)]",
+                "[(1, 4), (2, 3)]",
+                "Error"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Biểu thức lambda có thể chứa tối đa bao nhiêu câu lệnh?",
+            "opts": [
+                "1",
+                "2",
+                "Không giới hạn",
+                "5"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Để tính tuổi chính xác đến ngày hiện tại, ta nên dùng module nào?",
+            "opts": [
+                "time",
+                "datetime",
+                "calendar",
+                "math"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Câu lệnh set([1, 2, 2, 3]) tạo ra tập hợp có bao nhiêu phần tử?",
+            "opts": [
+                "2",
+                "3",
+                "4",
+                "1"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Làm thế nào để lấy phần tử cuối cùng của một tuple t?",
+            "opts": [
+                "t.last()",
+                "t[-1]",
+                "t(len(t))",
+                "t.pop()"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Hàm 'sorted([5, 2, 8, 1], reverse=True)' trả về kết quả nào?",
+            "opts": [
+                "[1, 2, 5, 8]",
+                "[8, 5, 2, 1]",
+                "(8, 5, 2, 1)",
+                "{8, 5, 2, 1}"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Cách truy cập giá trị 'Hà Nội' từ d = {'VN': {'cap': 'Hà Nội'}}?",
+            "opts": [
+                "d['VN']['cap']",
+                "d['VN', 'cap']",
+                "d.VN.cap",
+                "d['cap']"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Phép toán set1 - set2 có nghĩa là gì?",
+            "opts": [
+                "Các phần tử chỉ có ở set1",
+                "Các phần tử chỉ có ở set2",
+                "Các phần tử có ở cả hai",
+                "Loại bỏ set2 khỏi bộ nhớ"
+            ],
+            "ans": 0
+        },
+        {
+            "q": "Trong vòng lặp: 'for k, v in d.items():', v đại diện cho cái gì?",
+            "opts": [
+                "Key (Khóa)",
+                "Value (Giá trị)",
+                "Index (Chỉ số)",
+                "Cả key và value"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Hàm any([0, False, [], None]) trả về gì?",
+            "opts": [
+                "True",
+                "False",
+                "None",
+                "0"
+            ],
+            "ans": 1
+        },
+        {
+            "q": "Cấu trúc dữ liệu nào có tốc độ tìm kiếm phần tử trung bình là O(1)?",
+            "opts": [
+                "List",
+                "Tuple",
+                "Set/Dictionary",
+                "Linked List"
+            ],
+            "ans": 2
+        },
+        {
+            "q": "Cách tính số năm nhuận đơn giản: năm chia hết cho 4 và (không chia hết cho 100 hoặc chia hết cho 400). Điều kiện là?",
+            "opts": [
+                "y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)",
+                "y % 4 == 0 or (y % 100 != 0 and y % 400 == 0)",
+                "y % 400 == 0",
+                "y % 4 == 0"
+            ],
+            "ans": 0
+        }
+    ],
+    "coding_tasks": [
+        {
+            "q": "Tạo dictionary 'd' từ 2 list 'keys' và 'values' dùng zip",
+            "r": "dict\\s*\\(\\s*zip\\s*\\(\\s*keys\\s*,\\s*values\\s*\\)\\s*\\)",
+            "h": "dict(zip(keys, values))",
+            "w": "Hàm zip kết hợp 2 list, dict chuyển thành từ điển."
+        },
+        {
+            "q": "Tính tuổi 'age' từ 'birth_year' và 'current_year'",
+            "r": "current_year\\s*-\\s*birth_year",
+            "h": "current_year - birth_year",
+            "w": "Phép trừ đơn giản giữa năm hiện tại và năm sinh."
+        },
+        {
+            "q": "Dùng map và lambda để nhân đôi các phần tử trong list 'a'",
+            "r": "map\\s*\\(\\s*lambda\\s+x\\s*:\\s*x\\s*\\*\\s*2\\s*,\\s*a\\s*\\)",
+            "h": "map(lambda x: x * 2, a)",
+            "w": "Sử dụng map(function, iterable)."
+        },
+        {
+            "q": "Lấy giá trị của key 'id' trong 'data', mặc định là 0 nếu không thấy",
+            "r": "data\\.get\\s*\\(\\s*['\"]id['\"]\\s*,\\s*0\\s*\\)",
+            "h": "data.get('id', 0)",
+            "w": "Hàm .get() giúp tránh lỗi KeyError."
+        },
+        {
+            "q": "Tạo set 's' chứa các số bình phương từ 1 đến 5 bằng set comprehension",
+            "r": "\\{\\s*x\\s*\\*\\*\\s*2\\s+for\\s+x\\s+in\\s+range\\s*\\(\\s*1\\s*,\\s*6\\s*\\)\\s*\\}",
+            "h": "{x**2 for x in range(1, 6)}",
+            "w": "Set comprehension giống list comprehension nhưng dùng dấu {}."
+        },
+        {
+            "q": "Sắp xếp list 'students' (dạng tuple) theo phần tử thứ hai (điểm số)",
+            "r": "sorted\\s*\\(\\s*students\\s*,\\s*key\\s*=\\s*lambda\\s+x\\s*:\\s*x\\s*\\[\\s*1\\s*\\]\\s*\\)",
+            "h": "sorted(students, key=lambda x: x[1])",
+            "w": "Tham số key dùng để xác định tiêu chí sắp xếp."
+        },
+        {
+            "q": "Dùng filter để lấy các số lớn hơn 10 từ list 'nums'",
+            "r": "filter\\s*\\(\\s*lambda\\s+x\\s*:\\s*x\\s*>\\s*10\\s*,\\s*nums\\s*\\)",
+            "h": "filter(lambda x: x > 10, nums)",
+            "w": "Hàm filter lọc các phần tử thỏa mãn điều kiện."
+        },
+        {
+            "q": "Giải nén (transpose) ma trận 'matrix' dùng zip",
+            "r": "zip\\s*\\(\\s*\\*matrix\\s*\\)",
+            "h": "zip(*matrix)",
+            "w": "Dấu * dùng để giải nén các hàng của ma trận vào zip."
+        },
+        {
+            "q": "Kiểm tra xem chuỗi 's' có chứa toàn chữ số không",
+            "r": "s\\.isdigit\\s*\\(\\s*\\)",
+            "h": "s.isdigit()",
+            "w": "Hàm .isdigit() trả về True nếu chuỗi chỉ gồm số."
+        },
+        {
+            "q": "Gộp 2 dictionary 'd1' và 'd2' thành 'd3' (Python 3.9+)",
+            "r": "d3\\s*=\\s*d1\\s*\\|\\s*d2",
+            "h": "d3 = d1 | d2",
+            "w": "Toán tử | dùng để gộp dictionary cực nhanh."
+        }
+    ]
+}
