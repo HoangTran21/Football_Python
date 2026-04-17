@@ -193,7 +193,7 @@
             "ans": 0
         },
         {
-            "q": "Biểu thức lambda có thể chứa tối đa bao nhiêu câu lệnh?",
+            "q": "Biểu thức lambda có thể chứa tối đa bao nhiêu biểu thức?",
             "opts": [
                 "1",
                 "2",

@@ -120,15 +120,36 @@ let playerName = "L";
 let playerNumber = "22";
 
 const characterConfigs = [
-    { name: "Cơ Bản", skin: "#f3c19d", hair: "#d35400", shirt: "#e74c3c", number: "10", hairStyle: 0 },
-    { name: "Sáng", skin: "#ffdbac", hair: "#2c3e50", shirt: "#2980b9", number: "19", hairStyle: 1 },
-    { name: "Ngăm", skin: "#8d5524", hair: "#111", shirt: "#27ae60", number: "90", hairStyle: 2 },
-    { name: "Trẻ", skin: "#ffdbac", hair: "#e67e22", shirt: "#f1c40f", number: "7", hairStyle: 3 },
-    { name: "Lạnh", skin: "#f3c19d", hair: "#34495e", shirt: "#ffffff", number: "11", hairStyle: 4 },
-    { name: "Đậm", skin: "#4e342e", hair: "#111", shirt: "#333333", number: "24", hairStyle: 1 }
+    { name: "CR7", skin: "#c8a07a", hair: "#1a1a1a", hairStyle: 0, faceImg: "img/face_ronaldo.png" },
+    { name: "Messi", skin: "#d4a574", hair: "#2c2c2c", hairStyle: 0, faceImg: "img/face_messi.png" },
+    { name: "Neymar", skin: "#c8a070", hair: "#b8860b", hairStyle: 1, faceImg: "img/face_neymar.png" },
+    { name: "Mbappe", skin: "#5c3317", hair: "#111", hairStyle: 2, faceImg: "img/face_mbappe.png" },
+    { name: "Yamal", skin: "#8d5524", hair: "#1a1a1a", hairStyle: 0, faceImg: "img/face_yamal.png" },
+    { name: "DO MIXI", skin: "#d4a574", hair: "#111", hairStyle: 0, faceImg: "img/face_mixi.png" }
 ];
+
+// Preload face images for canvas drawing
+const faceImages = {};
+characterConfigs.forEach(cfg => {
+    const img = new Image();
+    img.src = cfg.faceImg;
+    faceImages[cfg.faceImg] = img;
+});
 let characterIndex = 0;
-let selectedShirtColor = '#e74c3c';
+let selectedShirtColor = '#DA291C'; // Default: Man United red
+
+// Club data: màu áo truyền thống & tên hiển thị
+const clubData = {
+    mu: { name: 'MAN UTD', shirt: '#DA291C', number: '7', accent: '#FFE500' },
+    chelsea: { name: 'CHELSEA', shirt: '#034694', number: '10', accent: '#ADBBCC' },
+    liverpool: { name: 'LIVERPOOL', shirt: '#C8102E', number: '9', accent: '#F6EB61' },
+    real: { name: 'REAL', shirt: '#ffffff', number: '7', accent: '#FEBE10' },
+    barca: { name: 'BARCA', shirt: '#004D98', number: '10', accent: '#EDBB00' },
+    juventus: { name: 'JUVENTUS', shirt: '#1e1e1e', number: '10', accent: '#c6a84d' },
+    bayern: { name: 'BAYERN', shirt: '#DC052D', number: '25', accent: '#0066B2' },
+    arsenal: { name: 'ARSENAL', shirt: '#EF0107', number: '14', accent: '#ffffff' }
+};
+let selectedClubId = 'mu';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -205,138 +226,173 @@ function drawField() {
 }
 
 function drawChibi(char, rotation = 0, scale = 1) {
-    const { x, y, shirt, skin, hair, name, number, state } = char;
+    const { x, y, shirt, skin, name, number, state } = char;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(scale, scale);
     ctx.rotate(rotation);
 
-    // Shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.2)';
-    ctx.beginPath(); ctx.ellipse(0, 45, 20, 8, 0, 0, Math.PI * 2); ctx.fill();
+    const sc = skin;
+    const isGoalie = (name || "").toUpperCase() === 'ONANA';
+    const isMbappe = (name || "").toUpperCase().includes("MBAPPE");
+    const isMixi = (name || "").toUpperCase().includes("MIXI");
 
-    // Skin Color
-    const skinColor = skin;
+    function hexDarken(hex, factor) {
+        let c = (hex || '#888888').replace('#', '');
+        if (c.length === 3) c = c.split('').map(ch => ch + ch).join('');
+        return `rgb(${Math.max(0, Math.round(parseInt(c.slice(0, 2), 16) * factor))},${Math.max(0, Math.round(parseInt(c.slice(2, 4), 16) * factor))},${Math.max(0, Math.round(parseInt(c.slice(4, 6), 16) * factor))})`;
+    }
+    function getContrastColor(hex) {
+        const c = (hex || '#888888').replace('#', '');
+        const r = parseInt(c.slice(0, 2), 16), g = parseInt(c.slice(2, 4), 16), b = parseInt(c.slice(4, 6), 16);
+        return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.55 ? '#1a1a2e' : '#ffffff';
+    }
+    const shortsColor = hexDarken(shirt, 0.55);
 
-    // Shirt
-    ctx.fillStyle = shirt;
-    ctx.fillRect(-12, 0, 24, 40);
+    // --- Shadow ---
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.beginPath(); ctx.ellipse(0, 48, 19, 7, 0, 0, Math.PI * 2); ctx.fill();
 
-    // Limbs
-    ctx.strokeStyle = skinColor;
-    ctx.lineWidth = 6;
-    ctx.lineCap = 'round';
-
+    // --- Cleats ---
+    ctx.fillStyle = '#1c1c1c';
     if (state === 'kicking') {
-        ctx.beginPath();
-        ctx.moveTo(-6, 40); ctx.lineTo(-12, 55);
-        ctx.moveTo(6, 40); ctx.lineTo(20, 42); ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(-8, 57, 9, 4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.save(); ctx.translate(8, 44); ctx.rotate(0.55);
+        ctx.beginPath(); ctx.ellipse(4, 14, 9, 4, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     } else if (state === 'diving') {
-        ctx.beginPath();
-        ctx.moveTo(-6, 40); ctx.lineTo(-15, 52);
-        ctx.moveTo(6, 40); ctx.lineTo(15, 52); ctx.stroke();
-    } else if (state === 'running') {
-        const bounce = Math.sin(Date.now() / 50) * 8;
-        ctx.beginPath();
-        ctx.moveTo(-7, 40); ctx.lineTo(-7 - bounce, 55 + Math.abs(bounce));
-        ctx.moveTo(7, 40); ctx.lineTo(7 + bounce, 55 - Math.abs(bounce));
-        ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(-10, 55, 9, 4, -0.25, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(10, 55, 9, 4, 0.25, 0, Math.PI * 2); ctx.fill();
     } else {
-        ctx.beginPath();
-        ctx.moveTo(-7, 40); ctx.lineTo(-7, 55);
-        ctx.moveTo(7, 40); ctx.lineTo(7, 55); ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(-8, 57, 9, 4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(8, 57, 9, 4, 0, 0, Math.PI * 2); ctx.fill();
     }
 
-    // Arms
-    const isGoalie = name === 'ONANA';
+    // --- Socks ---
+    ctx.fillStyle = '#f5f5f5';
+    const rr = (rx, ry, rw, rh, rd = 3) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(rx, ry, rw, rh, rd); else ctx.rect(rx, ry, rw, rh); ctx.fill(); };
+    if (state === 'kicking') {
+        rr(-12, 41, 8, 17); ctx.save(); ctx.translate(8, 35); ctx.rotate(0.55); rr(0, 0, 8, 17); ctx.restore();
+    } else if (state === 'diving') {
+        rr(-13, 39, 8, 17); rr(5, 39, 8, 17);
+    } else if (state === 'running') {
+        const b = Math.sin(Date.now() / 55) * 7;
+        rr(-12 + b * 0.4, 41, 8, 17); rr(4 - b * 0.4, 41 - Math.abs(b) * 0.3, 8, 17);
+    } else {
+        rr(-12, 41, 8, 17); rr(4, 41, 8, 17);
+    }
+
+    // --- Thighs (skin) ---
+    ctx.fillStyle = sc;
+    if (state === 'kicking') {
+        rr(-12, 28, 8, 15); ctx.save(); ctx.translate(8, 24); ctx.rotate(0.55); rr(0, 0, 8, 15); ctx.restore();
+    } else if (state === 'running') {
+        const b = Math.sin(Date.now() / 55) * 7;
+        rr(-12 + b * 0.5, 28, 8, 15); rr(4 - b * 0.5, 28 - Math.abs(b) * 0.4, 8, 15);
+    } else {
+        rr(-12, 28, 8, 15); rr(4, 28, 8, 15);
+    }
+
+    // --- Shorts ---
+    ctx.fillStyle = shortsColor;
+    ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(-13, 22, 26, 10, [0, 0, 6, 6]); else ctx.rect(-13, 22, 26, 10); ctx.fill();
+    // Tiny number on shorts
+    ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.font = '700 6px Outfit'; ctx.fillText(number || "", 6, 29);
+    // Shorts seam
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, 22); ctx.lineTo(0, 32); ctx.stroke();
+
+    // --- Shirt ---
+    ctx.fillStyle = shirt;
+    ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(-13, -5, 26, 29, [7, 7, 0, 0]); else ctx.rect(-13, -5, 26, 29); ctx.fill();
+    // V-collar
+    ctx.fillStyle = hexDarken(shirt, 0.72);
+    ctx.beginPath(); ctx.moveTo(-6, -5); ctx.lineTo(0, 3); ctx.lineTo(6, -5); ctx.closePath(); ctx.fill();
+
+    // --- Arms ---
+    ctx.strokeStyle = sc; ctx.lineWidth = 7; ctx.lineCap = 'round';
     if (isGoalie) {
         if (state === 'diving') {
-            ctx.beginPath();
-            ctx.moveTo(-12, 10); ctx.lineTo(-30, -5);
-            ctx.moveTo(12, 10); ctx.lineTo(30, -5); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-13, 7); ctx.lineTo(-30, -6); ctx.moveTo(13, 7); ctx.lineTo(30, -6); ctx.stroke();
         } else if (state === 'catching') {
-            ctx.beginPath();
-            ctx.moveTo(-12, 12); ctx.lineTo(-20, -10);
-            ctx.moveTo(12, 12); ctx.lineTo(20, -10); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-13, 9); ctx.lineTo(-22, -9); ctx.moveTo(13, 9); ctx.lineTo(22, -9); ctx.stroke();
         } else {
-            ctx.beginPath();
-            ctx.moveTo(-12, 10); ctx.lineTo(-25, 25);
-            ctx.moveTo(12, 10); ctx.lineTo(25, 25); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-13, 8); ctx.lineTo(-25, 22); ctx.moveTo(13, 8); ctx.lineTo(25, 22); ctx.stroke();
         }
     } else {
         ctx.beginPath();
         if (state === 'running') {
-            const swing = Math.sin(Date.now() / 50) * 10;
-            ctx.moveTo(-12, 10); ctx.lineTo(-20 + swing, 30);
-            ctx.moveTo(12, 10); ctx.lineTo(20 - swing, 30);
+            const sw = Math.sin(Date.now() / 55) * 10;
+            ctx.moveTo(-13, 7); ctx.lineTo(-21 + sw, 24); ctx.moveTo(13, 7); ctx.lineTo(21 - sw, 24);
+        } else if (state === 'kicking') {
+            ctx.moveTo(-13, 7); ctx.lineTo(-23, 20); ctx.moveTo(13, 7); ctx.lineTo(25, 12);
         } else {
-            ctx.moveTo(-12, 10); ctx.lineTo(-20, 30);
-            ctx.moveTo(12, 10); ctx.lineTo(20, 30);
+            ctx.moveTo(-13, 7); ctx.lineTo(-21, 24); ctx.moveTo(13, 7); ctx.lineTo(21, 24);
         }
         ctx.stroke();
     }
+    // Sleeves
+    ctx.fillStyle = shirt;
+    const sy = (state === 'kicking') ? 2 : 4;
+    rr(-20, sy, 8, 10, 4); rr(12, sy, 8, 10, 4);
 
-    // Head
-    ctx.fillStyle = skinColor;
-    ctx.beginPath(); ctx.arc(0, -15, 22, 0, Math.PI * 2); ctx.fill();
+    // --- Neck ---
+    ctx.fillStyle = sc;
+    ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(-5, -14, 10, 12, 3); else ctx.rect(-5, -14, 10, 12); ctx.fill();
 
-    // Hair Style Drawing
-    ctx.fillStyle = hair;
-    const style = char.hairStyle || 0;
-    if (style === 1) { // Spiky
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-            const angle = Math.PI + (i * Math.PI) / 5;
-            const x = Math.cos(angle) * 25;
-            const y = -15 + Math.sin(angle) * 25;
-            ctx.lineTo(x, y);
-            const midAngle = angle + Math.PI / 10;
-            ctx.lineTo(Math.cos(midAngle) * 18, -15 + Math.sin(midAngle) * 18);
+    // --- HEAD ---
+    const faceImg = faceImages[char.faceImg];
+    const useFallback = !faceImg || !faceImg.complete || faceImg.naturalWidth === 0 || isMbappe;
+
+    if (!useFallback) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(0, -16, 23, 0, Math.PI * 2); ctx.clip();
+        ctx.drawImage(faceImg, -23, -39, 46, 46);
+        ctx.restore();
+
+        // MOLE for MIXI (Right side of viewer / Mixi's left)
+        if (isMixi) {
+            ctx.fillStyle = '#111';
+            ctx.beginPath(); ctx.arc(8.5, -9, 2.2, 0, Math.PI * 2); ctx.fill();
         }
-        ctx.fill();
-    } else if (style === 2) { // Side-swept
+
+        ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(0, -16, 23, 0, Math.PI * 2); ctx.stroke();
+    } else {
+        // Fallback Face
+        ctx.fillStyle = char.hair || '#111';
+        const hs = char.hairStyle || 0;
         ctx.beginPath();
-        ctx.arc(0, -20, 23, Math.PI * 0.8, Math.PI * 2.2);
-        ctx.lineTo(15, -10);
+        if (hs === 1) ctx.arc(0, -21, 26, Math.PI, 0);
+        else if (hs === 2) ctx.arc(0, -18, 25, Math.PI, 0);
+        else ctx.arc(0, -22, 26, Math.PI, 0);
         ctx.fill();
-    } else if (style === 3) { // Center-parted
-        ctx.beginPath();
-        ctx.arc(-8, -20, 18, Math.PI, 0);
-        ctx.arc(8, -20, 18, Math.PI, 0);
-        ctx.fill();
-    } else if (style === 4) { // Buzz cut
-        ctx.beginPath(); ctx.arc(0, -17, 23, Math.PI, 0); ctx.fill();
-    } else { // Style 0: Classic Bowl
-        ctx.beginPath(); ctx.arc(0, -20, 23, Math.PI, 0); ctx.fill();
+
+        ctx.fillStyle = sc;
+        ctx.beginPath(); ctx.arc(0, -16, 23, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(-8, -16, 4.5, 0, Math.PI * 2); ctx.arc(8, -16, 4.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#111';
+        ctx.beginPath(); ctx.arc(-8, -16, 2.2, 0, Math.PI * 2); ctx.arc(8, -16, 2.2, 0, Math.PI * 2); ctx.fill();
+
+        ctx.strokeStyle = '#111'; ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.moveTo(-13, -22.5); ctx.quadraticCurveTo(-8, -25, -3, -22); ctx.moveTo(3, -22); ctx.quadraticCurveTo(8, -25, 13, -22.5); ctx.stroke();
+
+        ctx.strokeStyle = '#353535'; ctx.lineWidth = 2; ctx.beginPath();
+        if (state === 'sad') ctx.arc(0, -7, 6, Math.PI, 0);
+        else if (state === 'smile' || state === 'catching') ctx.arc(0, -11, 8, 0, Math.PI);
+        else ctx.arc(0, -11, 5, 0.2, Math.PI - 0.2);
+        ctx.stroke();
     }
 
-    ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.arc(-8, -15, 4, 0, Math.PI * 2); ctx.arc(8, -15, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#333';
-    ctx.beginPath(); ctx.arc(-8, -15, 1.5, 0, Math.PI * 2); ctx.arc(8, -15, 1.5, 0, Math.PI * 2); ctx.fill();
-
-    // Mouth
-    ctx.strokeStyle = '#333'; ctx.lineWidth = 1.5; ctx.beginPath();
-    if (state === 'sad') ctx.arc(0, -5, 5, Math.PI, 0);
-    else if (state === 'smile' || state === 'catching') ctx.arc(0, -8, 7, 0, Math.PI);
-    else ctx.arc(0, -8, 4, 0.2, Math.PI - 0.2);
-    ctx.stroke();
-
-    // Shirt Text (Name & Number)
-    ctx.fillStyle = isGoalie ? '#000' : '#fff';
+    // --- SHIRT TEXT ---
+    ctx.fillStyle = isGoalie ? '#000' : getContrastColor(shirt);
     ctx.textAlign = 'center';
-
-    const nameToDraw = name;
-    const numToDraw = number;
-
-    // Name (Top of shirt) - Dynamic scaling for length
-    let msgFontSize = nameToDraw.length > 6 ? 7 : 9;
-    ctx.font = `800 ${msgFontSize}px Outfit`;
-    ctx.fillText(nameToDraw, 0, 14, 22);
-
-    // Number (Bottom of shirt)
-    ctx.font = '800 18px Outfit';
-    ctx.fillText(numToDraw, 0, 32, 22);
+    const nl = (name || "").length > 6 ? 7 : 9;
+    ctx.font = `800 ${nl}px Outfit`;
+    ctx.fillText(name || "", 0, 12, 22);
+    ctx.font = '800 17px Outfit';
+    ctx.fillText(number || "10", 0, 28, 22);
 
     ctx.restore();
 }
@@ -523,9 +579,10 @@ function selectChar(idx) {
     document.getElementById('char' + idx).classList.add('active');
 }
 
-function selectShirt(color, el) {
-    selectedShirtColor = color;
-    document.querySelectorAll('.shirt-color').forEach(c => c.classList.remove('active'));
+function selectClub(clubId, el) {
+    selectedClubId = clubId;
+    selectedShirtColor = clubData[clubId].shirt;
+    document.querySelectorAll('.club-card').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
 }
 
@@ -533,22 +590,31 @@ function startGame() {
     const nameInput = document.getElementById('playerNameInput').value.trim();
     const numInput = document.getElementById('playerNumberInput').value.trim();
 
+    if (!nameInput || !numInput) {
+        document.getElementById('mixiNotice').style.display = 'flex';
+        return;
+    }
+
     const charConfig = characterConfigs[characterIndex];
-    player.name = nameInput ? nameInput.toUpperCase() : "NGHĨA BÉO";
-    player.number = numInput || "10";
+    const club = clubData[selectedClubId];
+
+    player.name = nameInput.toUpperCase();
+    player.number = numInput;
     player.skin = charConfig.skin;
     player.hair = charConfig.hair;
     player.hairStyle = charConfig.hairStyle;
+    player.faceImg = charConfig.faceImg;
+    player.body = charConfig.body;
     player.shirt = selectedShirtColor;
 
     playerName = player.name;
     playerNumber = player.number;
 
-    // Save to localStorage
     localStorage.setItem('penalty_playerName', player.name);
     localStorage.setItem('penalty_playerNumber', player.number);
     localStorage.setItem('penalty_characterIndex', characterIndex);
     localStorage.setItem('penalty_shirtColor', selectedShirtColor);
+    localStorage.setItem('penalty_clubId', selectedClubId);
 
     gameStarted = true;
     document.getElementById('welcomeScreen').style.display = 'none';
@@ -596,6 +662,13 @@ function showQuestion() {
     goalie.x = cw / 2; goalie.y = 90; goalie.rotation = 0; goalie.state = 'idle';
     player.x = cw / 2 - 160; player.y = ch - 100; player.state = 'idle'; player.thought = null;
     render();
+}
+
+function closeMixiNotice() {
+    document.getElementById('mixiNotice').style.display = 'none';
+    const nameInput = document.getElementById('playerNameInput').value.trim();
+    if (!nameInput) document.getElementById('playerNameInput').focus();
+    else document.getElementById('playerNumberInput').focus();
 }
 
 function handleLifeLoss() {
@@ -838,7 +911,7 @@ function openEnvelope(index) {
             setTimeout(() => {
                 env.classList.add('revealed');
                 env.onclick = null;
-            }, i * 200); // Stagger the reveal for better effect
+            }, i * 200);
         });
         document.querySelectorAll('.envelope.opened').forEach(env => env.onclick = null);
 
@@ -874,26 +947,18 @@ function openEnvelope(index) {
 
 
 window.onload = function () {
-    // Load saved settings from localStorage
-    const savedName = localStorage.getItem('penalty_playerName');
-    const savedNum = localStorage.getItem('penalty_playerNumber');
     const savedChar = localStorage.getItem('penalty_characterIndex');
     const savedShirt = localStorage.getItem('penalty_shirtColor');
 
-    if (savedName) {
-        document.getElementById('playerNameInput').value = savedName;
-    }
-    if (savedNum) {
-        document.getElementById('playerNumberInput').value = savedNum;
-    }
+    document.getElementById('playerNameInput').value = "";
+    document.getElementById('playerNumberInput').value = "";
+
     if (savedChar !== null) {
         selectChar(parseInt(savedChar));
     }
     if (savedShirt) {
-        // Find the shirt element with this color
         const shirtEls = document.querySelectorAll('.shirt-color');
         shirtEls.forEach(el => {
-            // style.background might be rgb, so we check the hex we set in HTML style
             if (el.getAttribute('onclick').includes(savedShirt)) {
                 selectShirt(savedShirt, el);
             }
@@ -951,7 +1016,6 @@ async function renderLeaderboard() {
 async function saveScore(name, jerseyNumber, finalScore) {
     const jNum = parseInt(jerseyNumber, 10) || 0;
     try {
-        // 1. Tìm bản ghi hiện có của người chơi này trong module hiện tại
         const { data: records, error: fetchError } = await supabaseClient
             .from('leaderboard')
             .select('*')
@@ -975,7 +1039,6 @@ async function saveScore(name, jerseyNumber, finalScore) {
                 console.log("Cập nhật điểm thành công!");
             }
         } else {
-            // 3. Nếu chưa tồn tại, thêm bản ghi mới kèm thông tin module
             const { error: insertError } = await supabaseClient
                 .from('leaderboard')
                 .insert([{ name, jersey_number: jNum, score: finalScore, module: selectedModule.toString() }]);
@@ -983,7 +1046,6 @@ async function saveScore(name, jerseyNumber, finalScore) {
             console.log("Lưu điểm mới thành công!");
         }
 
-        // Sau khi lưu, cập nhật filter của bảng xếp hạng về module vừa chơi để người chơi thấy điểm của mình
         if (document.getElementById('leaderboardFilter')) {
             document.getElementById('leaderboardFilter').value = selectedModule.toString();
         }

@@ -60,64 +60,78 @@
                 <div class="player-start-bar">
                     <div class="input-group">
                         <label>Tên người chơi</label>
-                        <input type="text" id="playerNameInput" placeholder="Nghĩa Béo" value="Nghĩa Béo">
+                        <input type="text" id="playerNameInput" placeholder="Nhập tên của bạn...">
                     </div>
                     <div class="input-group">
                         <label>Số áo</label>
-                        <input type="number" id="playerNumberInput" min="1" max="99" value="10">
+                        <input type="number" id="playerNumberInput" min="1" max="99" placeholder="Số..">
                     </div>
                 </div>
 
                 <div class="character-selection">
-                    <h3>👤 CHỌN DIỆN MẠO</h3>
+                    <h3>🧑‍⚽ CHỌN CẦU THỦ</h3>
                     <div class="char-options">
                         <div class="char-card active" onclick="selectChar(0)" id="char0">
-                            <div class="char-avatar skin-1">
-                                <div class="hair-style-0"></div>
-                            </div>
+                            <img class="char-face" src="img/face_ronaldo.png" alt="Ronaldo">
+                            <span class="char-label">CR7</span>
                         </div>
                         <div class="char-card" onclick="selectChar(1)" id="char1">
-                            <div class="char-avatar skin-2">
-                                <div class="hair-style-1"></div>
-                            </div>
+                            <img class="char-face" src="img/face_messi.png" alt="Messi">
+                            <span class="char-label">Messi</span>
                         </div>
                         <div class="char-card" onclick="selectChar(2)" id="char2">
-                            <div class="char-avatar skin-3">
-                                <div class="hair-style-2"></div>
-                            </div>
+                            <img class="char-face" src="img/face_neymar.png" alt="Neymar">
+                            <span class="char-label">Neymar</span>
                         </div>
                         <div class="char-card" onclick="selectChar(3)" id="char3">
-                            <div class="char-avatar skin-2">
-                                <div class="hair-style-3"></div>
-                            </div>
+                            <img class="char-face" src="img/face_mbappe.png" alt="Mbappe">
+                            <span class="char-label">Mbappé 🥿</span>
                         </div>
                         <div class="char-card" onclick="selectChar(4)" id="char4">
-                            <div class="char-avatar skin-1">
-                                <div class="hair-style-4"></div>
-                            </div>
+                            <img class="char-face" src="img/face_yamal.png" alt="Yamal">
+                            <span class="char-label">Yamal</span>
                         </div>
                         <div class="char-card" onclick="selectChar(5)" id="char5">
-                            <div class="char-avatar skin-4">
-                                <div class="hair-style-1"></div>
-                            </div>
+                            <img class="char-face" src="img/face_mixi.png" alt="Mixi">
+                            <span class="char-label">Độ Mixi</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="shirt-selection">
-                    <h3>👕 CHỌN MÀU ÁO</h3>
-                    <div class="shirt-options">
-                        <div class="shirt-color active" onclick="selectShirt('#e74c3c', this)"
-                            style="background: #e74c3c"></div>
-                        <div class="shirt-color" onclick="selectShirt('#3498db', this)" style="background: #3498db">
+                <div class="club-selection">
+                    <h3>🏟️ CHỌN CÂU LẠC BỘ</h3>
+                    <div class="club-options">
+                        <div class="club-card active" id="club-mu" onclick="selectClub('mu', this)">
+                            <div class="club-logo club-logo-mu"></div>
+                            <span class="club-name">Man Utd</span>
                         </div>
-                        <div class="shirt-color" onclick="selectShirt('#2ecc71', this)" style="background: #2ecc71">
+                        <div class="club-card" id="club-chelsea" onclick="selectClub('chelsea', this)">
+                            <div class="club-logo club-logo-chelsea"></div>
+                            <span class="club-name">Chelsea</span>
                         </div>
-                        <div class="shirt-color" onclick="selectShirt('#f1c40f', this)" style="background: #f1c40f">
+                        <div class="club-card" id="club-liverpool" onclick="selectClub('liverpool', this)">
+                            <div class="club-logo club-logo-liverpool"></div>
+                            <span class="club-name">Liverpool</span>
                         </div>
-                        <div class="shirt-color" onclick="selectShirt('#ffffff', this)" style="background: #ffffff">
+                        <div class="club-card" id="club-real" onclick="selectClub('real', this)">
+                            <div class="club-logo club-logo-real"></div>
+                            <span class="club-name">Real Madrid</span>
                         </div>
-                        <div class="shirt-color" onclick="selectShirt('#333333', this)" style="background: #333333">
+                        <div class="club-card" id="club-barca" onclick="selectClub('barca', this)">
+                            <div class="club-logo club-logo-barca"></div>
+                            <span class="club-name">Barcelona</span>
+                        </div>
+                        <div class="club-card" id="club-juventus" onclick="selectClub('juventus', this)">
+                            <div class="club-logo club-logo-juventus"></div>
+                            <span class="club-name">Juventus</span>
+                        </div>
+                        <div class="club-card" id="club-bayern" onclick="selectClub('bayern', this)">
+                            <div class="club-logo club-logo-bayern"></div>
+                            <span class="club-name">Bayern</span>
+                        </div>
+                        <div class="club-card" id="club-arsenal" onclick="selectClub('arsenal', this)">
+                            <div class="club-logo club-logo-arsenal"></div>
+                            <span class="club-name">Arsenal</span>
                         </div>
                     </div>
                 </div>
@@ -125,6 +139,15 @@
                 <div style="margin-top: 25px;">
                     <button class="start-game-btn" style="width: 100%; border-radius: 20px;" onclick="startGame()">BẮT
                         ĐẦU CHINH PHỤC</button>
+                </div>
+
+                <!-- Custom Validation Modal -->
+                <div id="mixiNotice" class="mixi-modal" style="display: none;">
+                    <div class="mixi-modal-content">
+                        <img src="img/mixi_soao.jpg" alt="Mixi nhắc nhở" class="mixi-notice-img">
+                        <p class="mixi-notice-text">“Nhớ có tên và số áo như anh nhé!”</p>
+                        <button class="mixi-close-btn" onclick="closeMixiNotice()">Okkkk anh Độ!</button>
+                    </div>
                 </div>
             </div>
 
