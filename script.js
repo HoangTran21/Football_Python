@@ -120,12 +120,12 @@ let playerName = "L";
 let playerNumber = "22";
 
 const characterConfigs = [
-    { name: "CR7", skin: "#c8a07a", hair: "#1a1a1a", hairStyle: 0, faceImg: "img/face_ronaldo.png" },
-    { name: "Messi", skin: "#d4a574", hair: "#2c2c2c", hairStyle: 0, faceImg: "img/face_messi.png" },
-    { name: "Neymar", skin: "#c8a070", hair: "#b8860b", hairStyle: 1, faceImg: "img/face_neymar.png" },
-    { name: "Mbappe", skin: "#5c3317", hair: "#111", hairStyle: 2, faceImg: "img/face_mbappe.png" },
-    { name: "Yamal", skin: "#8d5524", hair: "#1a1a1a", hairStyle: 0, faceImg: "img/face_yamal.png" },
-    { name: "DO MIXI", skin: "#d4a574", hair: "#111", hairStyle: 0, faceImg: "img/face_mixi.png" }
+    { name: "CR7", skin: "#c8a07a", hair: "#1a1a1a", hairStyle: 'fade', browType: 'thick', facialHair: null, faceImg: "img/face_ronaldo.png" },
+    { name: "Messi", skin: "#d4a574", hair: "#2c2c2c", hairStyle: 'classic', browType: 'normal', facialHair: 'beard', faceImg: "img/face_messi.png" },
+    { name: "Neymar", skin: "#c8a070", hair: "#b8860b", hairStyle: 'mohawk', browType: 'thin', facialHair: 'goatee', faceImg: "img/face_neymar.png" },
+    { name: "Mbappe", skin: "#5c3317", hair: "#111", hairStyle: 'buzz', browType: 'normal', facialHair: null, faceImg: "img/face_mbappe.png" },
+    { name: "Yamal", skin: "#8d5524", hair: "#1a1a1a", hairStyle: 'curly', browType: 'normal', facialHair: null, faceImg: "img/face_yamal.png" },
+    { name: "DO MIXI", skin: "#d4a574", hair: "#111", hairStyle: 'pompadour', browType: null, facialHair: null, special: 'mole', faceImg: "img/face_mixi.png" }
 ];
 
 // Preload face images for canvas drawing
@@ -162,7 +162,7 @@ let ball = { ...ballStart, rotation: 0 };
 let goalie = {
     x: cw / 2, y: 90, rotation: 0, state: 'idle',
     shirt: '#f1c40f', skin: '#4e342e', hair: '#111',
-    name: 'ONANA', number: '24'
+    name: 'ONANA', number: '24', hairStyle: 'buzz', browType: 'normal', facialHair: null
 };
 let player = {
     x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null,
@@ -339,50 +339,116 @@ function drawChibi(char, rotation = 0, scale = 1) {
     ctx.fillStyle = sc;
     ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(-5, -14, 10, 12, 3); else ctx.rect(-5, -14, 10, 12); ctx.fill();
 
-    // --- HEAD ---
-    const faceImg = faceImages[char.faceImg];
-    const useFallback = !faceImg || !faceImg.complete || faceImg.naturalWidth === 0 || isMbappe;
+    // --- HEAD & FACE DRAWING ---
+    const hs = char.hairStyle || 'classic';
+    const bt = char.browType || 'normal';
+    const fh = char.facialHair || null;
 
-    if (!useFallback) {
-        ctx.save();
-        ctx.beginPath(); ctx.arc(0, -16, 23, 0, Math.PI * 2); ctx.clip();
-        ctx.drawImage(faceImg, -23, -39, 46, 46);
-        ctx.restore();
-
-        // MOLE for MIXI (Right side of viewer / Mixi's left)
-        if (isMixi) {
-            ctx.fillStyle = '#111';
-            ctx.beginPath(); ctx.arc(8.5, -9, 2.2, 0, Math.PI * 2); ctx.fill();
+    // 1. Hair Back/Base
+    ctx.fillStyle = char.hair || '#111';
+    ctx.beginPath();
+    if (hs === 'mohawk') {
+        ctx.ellipse(0, -28, 12, 22, 0, 0, Math.PI * 2);
+    } else if (hs === 'buzz') {
+        ctx.arc(0, -18, 24, Math.PI, 0);
+    } else if (hs === 'curly') {
+        for (let a = 0; a < Math.PI; a += 0.4) {
+            ctx.arc(Math.cos(a + Math.PI) * 24, Math.sin(a + Math.PI) * 24 - 18, 6, 0, Math.PI * 2);
         }
-
-        ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(0, -16, 23, 0, Math.PI * 2); ctx.stroke();
-    } else {
-        // Fallback Face
-        ctx.fillStyle = char.hair || '#111';
-        const hs = char.hairStyle || 0;
+    } else if (hs === 'fade') {
+        ctx.arc(0, -21, 25, Math.PI, 0);
+        ctx.fillRect(-25, -21, 50, 5);
+    } else if (hs === 'pompadour') {
+        // High volume hair for Mixi
         ctx.beginPath();
-        if (hs === 1) ctx.arc(0, -21, 26, Math.PI, 0);
-        else if (hs === 2) ctx.arc(0, -18, 25, Math.PI, 0);
-        else ctx.arc(0, -22, 26, Math.PI, 0);
+        ctx.ellipse(0, -26, 26, 18, 0, Math.PI, 0); // Top volume
         ctx.fill();
+        ctx.fillRect(-24, -22, 48, 8); // Sides
+    } else {
+        ctx.arc(0, -22, 26, Math.PI, 0);
+    }
+    ctx.fill();
 
-        ctx.fillStyle = sc;
-        ctx.beginPath(); ctx.arc(0, -16, 23, 0, Math.PI * 2); ctx.fill();
+    // 2. Face Shape
+    ctx.fillStyle = sc;
+    ctx.beginPath();
+    ctx.arc(0, -16, 23, 0, Math.PI * 2);
+    ctx.fill();
 
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(-8, -16, 4.5, 0, Math.PI * 2); ctx.arc(8, -16, 4.5, 0, Math.PI * 2); ctx.fill();
+    // 3. Facial Hair (Beard/Mustache)
+    if (fh) {
+        ctx.fillStyle = hexDarken(char.hair || '#111', 0.8);
+        ctx.globalAlpha = 0.5;
+        if (fh === 'beard') {
+            ctx.beginPath(); ctx.arc(0, -11, 23.2, 0.4, Math.PI - 0.4); 
+            ctx.lineTo(0, -2); ctx.fill();
+        } else if (fh === 'goatee') {
+            ctx.beginPath(); ctx.ellipse(0, -5, 7, 8, 0, 0, Math.PI * 2); ctx.fill();
+        } else if (fh === 'mixi-style') {
+            // Refined Mixi beard: Thin mustache + sharp goatee
+            ctx.fillRect(-12, -14, 24, 1.8); // Mustache
+            ctx.beginPath(); 
+            ctx.moveTo(-3, -10); ctx.lineTo(0, -3); ctx.lineTo(3, -10); ctx.fill(); // Soul patch
+            ctx.beginPath(); ctx.arc(0, -4, 5, 0, Math.PI); ctx.stroke(); // Chin shadow
+        }
+        ctx.globalAlpha = 1.0;
+    }
+
+    // 4. Eyes
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(-8, -16, 4.5, 0, Math.PI * 2);
+    ctx.arc(8, -16, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Pupils
+    ctx.fillStyle = '#111';
+    ctx.beginPath();
+    let eyeFocusY = (state === 'kicking') ? -15 : -16;
+    ctx.arc(-8, eyeFocusY, 2.2, 0, Math.PI * 2);
+    ctx.arc(8, eyeFocusY, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 5. Eyebrows
+    ctx.strokeStyle = hexDarken(char.hair || '#111', 0.5);
+    ctx.lineWidth = (bt === 'thick') ? 2.8 : 1.8;
+    ctx.beginPath();
+    if (bt === 'thick') {
+        ctx.moveTo(-14, -23); ctx.lineTo(-3, -21.5);
+        ctx.moveTo(14, -23); ctx.lineTo(3, -21.5);
+    } else if (bt === 'sharp') {
+        ctx.lineWidth = 2.2;
+        ctx.moveTo(-14, -22); ctx.lineTo(-4, -24);
+        ctx.moveTo(14, -22); ctx.lineTo(4, -24);
+    } else {
+        ctx.moveTo(-13, -22.5); ctx.quadraticCurveTo(-8, -25, -3, -22);
+        ctx.moveTo(13, -22.5); ctx.quadraticCurveTo(8, -25, 3, -22);
+    }
+    ctx.stroke();
+
+    // 6. Mouth
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    if (state === 'sad') {
+        ctx.arc(0, -4, 6, Math.PI, 0);
+    } else if (state === 'smile' || state === 'catching') {
+        ctx.arc(0, -11, 8, 0.1, Math.PI - 0.1);
+    } else if (state === 'running') {
+        ctx.arc(0, -10, 3.5, 0, Math.PI * 2); // Small O shape
+    } else {
+        ctx.arc(0, -11, 5, 0.4, Math.PI - 0.4);
+    }
+    ctx.stroke();
+
+    // 7. Special Extras (Mole, etc.)
+    if (char.special === 'mole') {
         ctx.fillStyle = '#111';
-        ctx.beginPath(); ctx.arc(-8, -16, 2.2, 0, Math.PI * 2); ctx.arc(8, -16, 2.2, 0, Math.PI * 2); ctx.fill();
-
-        ctx.strokeStyle = '#111'; ctx.lineWidth = 1.8;
-        ctx.beginPath(); ctx.moveTo(-13, -22.5); ctx.quadraticCurveTo(-8, -25, -3, -22); ctx.moveTo(3, -22); ctx.quadraticCurveTo(8, -25, 13, -22.5); ctx.stroke();
-
-        ctx.strokeStyle = '#353535'; ctx.lineWidth = 2; ctx.beginPath();
-        if (state === 'sad') ctx.arc(0, -7, 6, Math.PI, 0);
-        else if (state === 'smile' || state === 'catching') ctx.arc(0, -11, 8, 0, Math.PI);
-        else ctx.arc(0, -11, 5, 0.2, Math.PI - 0.2);
-        ctx.stroke();
+        ctx.beginPath(); ctx.arc(9, -10, 2, 0, Math.PI * 2); ctx.fill();
+    }
+    if (name === 'NEYMAR') { // Earring
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath(); ctx.arc(23, -16, 2, 0, Math.PI * 2); ctx.fill();
     }
 
     // --- SHIRT TEXT ---
@@ -603,6 +669,9 @@ function startGame() {
     player.skin = charConfig.skin;
     player.hair = charConfig.hair;
     player.hairStyle = charConfig.hairStyle;
+    player.browType = charConfig.browType;
+    player.facialHair = charConfig.facialHair;
+    player.special = charConfig.special;
     player.faceImg = charConfig.faceImg;
     player.body = charConfig.body;
     player.shirt = selectedShirtColor;
