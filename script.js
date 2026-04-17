@@ -947,22 +947,23 @@ function openEnvelope(index) {
 
 
 window.onload = function () {
+    const savedName = localStorage.getItem('penalty_playerName');
+    const savedNumber = localStorage.getItem('penalty_playerNumber');
     const savedChar = localStorage.getItem('penalty_characterIndex');
-    const savedShirt = localStorage.getItem('penalty_shirtColor');
+    const savedClub = localStorage.getItem('penalty_clubId');
 
-    document.getElementById('playerNameInput').value = "";
-    document.getElementById('playerNumberInput').value = "";
+    if (savedName) document.getElementById('playerNameInput').value = savedName;
+    if (savedNumber) document.getElementById('playerNumberInput').value = savedNumber;
 
     if (savedChar !== null) {
         selectChar(parseInt(savedChar));
     }
-    if (savedShirt) {
-        const shirtEls = document.querySelectorAll('.shirt-color');
-        shirtEls.forEach(el => {
-            if (el.getAttribute('onclick').includes(savedShirt)) {
-                selectShirt(savedShirt, el);
-            }
-        });
+
+    if (savedClub) {
+        const clubEl = document.getElementById('club-' + savedClub);
+        if (clubEl) {
+            selectClub(savedClub, clubEl);
+        }
     }
     renderLeaderboard();
 };
