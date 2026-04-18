@@ -1,0 +1,452 @@
+{
+  "title": "Kiem_tra_module_4_Data_Structures_Core",
+  "time_seconds": 7200,
+  "questions": [
+    {
+      "q": "Cấu trúc dữ liệu nào trong Python giữ THỨ TỰ phần tử và cho phép thay đổi (mutable)?",
+      "opts": [
+        "Tuple",
+        "Set",
+        "List",
+        "Frozen set"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Cấu trúc dữ liệu nào KHÔNG cho phép phần tử trùng lặp?",
+      "opts": [
+        "List",
+        "Tuple",
+        "Set",
+        "String"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Tuple có đặc điểm nổi bật nào?",
+      "opts": [
+        "Không có thứ tự",
+        "Mutable",
+        "Immutable",
+        "Lưu key-value"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Dictionary lưu dữ liệu theo dạng nào?",
+      "opts": [
+        "index-value",
+        "key-value",
+        "item-only",
+        "value-key"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Lệnh nào thêm phần tử 10 vào cuối list a?",
+      "opts": [
+        "a.add(10)",
+        "a.insert(10)",
+        "a.append(10)",
+        "a.push(10)"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Phương thức nào thêm phần tử vào set s?",
+      "opts": [
+        "s.append(x)",
+        "s.add(x)",
+        "s.insert(x)",
+        "s.push(x)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Để truy cập giá trị theo key 'name' trong dict d an toàn, nên dùng?",
+      "opts": [
+        "d.name",
+        "d['name']",
+        "d.get('name')",
+        "d.fetch('name')"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "So với list, set phù hợp hơn trong bài toán nào?",
+      "opts": [
+        "Giữ nguyên thứ tự nhập",
+        "Truy cập theo chỉ số",
+        "Kiểm tra tồn tại nhanh và loại trùng",
+        "Lưu cặp key-value"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Trong tuple t = (1, 2, 3), t[0] bằng bao nhiêu?",
+      "opts": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của len({'a':1, 'b':2, 'c':3}) là gì?",
+      "opts": [
+        "2",
+        "3",
+        "1",
+        "Lỗi"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Đâu là khai báo tuple một phần tử đúng?",
+      "opts": [
+        "(5)",
+        "[5]",
+        "(5,)",
+        "{5}"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Phép toán nào lấy phần tử CHUNG của hai set?",
+      "opts": [
+        "|",
+        "&",
+        "-",
+        "^"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Biểu thức nào lấy phần tử cuối list a?",
+      "opts": [
+        "a[last]",
+        "a[len(a)]",
+        "a[-1]",
+        "a(end)"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Điều gì đúng với dictionary key?",
+      "opts": [
+        "Có thể dùng list làm key",
+        "Có thể trùng key",
+        "Key phải hashable và duy nhất",
+        "Chỉ dùng string làm key"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Chuyển list a sang set để loại trùng dùng lệnh nào?",
+      "opts": [
+        "list(a)",
+        "set(a)",
+        "tuple(a)",
+        "dict(a)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Set có hỗ trợ truy cập theo chỉ số như s[0] không?",
+      "opts": [
+        "Có, luôn luôn",
+        "Không, vì set không có thứ tự chỉ mục",
+        "Chỉ khi set có số",
+        "Chỉ Python 2 mới có"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Để cập nhật nhiều key từ dict d2 vào d1 dùng gì?",
+      "opts": [
+        "d1.merge(d2)",
+        "d1.add(d2)",
+        "d1.update(d2)",
+        "d1.append(d2)"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "So sánh đúng về list và tuple là gì?",
+      "opts": [
+        "Cả hai đều immutable",
+        "List immutable, tuple mutable",
+        "List mutable, tuple immutable",
+        "Cả hai đều chỉ chứa số"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Để đếm tần suất phần tử trong danh sách, cấu trúc nào hay dùng nhất?",
+      "opts": [
+        "Set",
+        "Tuple",
+        "Dictionary",
+        "Float"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Kết quả của {1,2,3} - {2} là gì?",
+      "opts": [
+        "{2}",
+        "{1,3}",
+        "{1,2,3}",
+        "{}"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Bài toán giữ thứ tự lịch sử thao tác nên ưu tiên cấu trúc nào?",
+      "opts": [
+        "Set",
+        "List",
+        "Tuple",
+        "Boolean"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Khi cần dữ liệu cố định không thay đổi để làm key dict, nên dùng?",
+      "opts": [
+        "List",
+        "Tuple",
+        "Set",
+        "Dictionary"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Dictionary nào sau đây hợp lệ?",
+      "opts": [
+        "{[1,2]: 'A'}",
+        "{(1,2): 'A'}",
+        "{{1,2}: 'A'}",
+        "{ {'k':1}: 'A' }"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Nếu muốn kiểm tra phần tử x có trong list a nhanh hơn ở dữ liệu lớn, nên làm gì?",
+      "opts": [
+        "Chuyển sang tuple",
+        "Chuyển sang set",
+        "Chuyển sang string",
+        "Nhân đôi list"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của tuple([1,2,3]) là gì?",
+      "opts": [
+        "[1,2,3]",
+        "{1,2,3}",
+        "(1,2,3)",
+        "{'1':2,'3':4}"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Phát biểu nào đúng về độ phức tạp trung bình tra cứu key trong dict?",
+      "opts": [
+        "O(n)",
+        "O(log n)",
+        "O(1)",
+        "O(n^2)"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Để lấy danh sách tất cả key trong dict d dùng gì?",
+      "opts": [
+        "d.keys()",
+        "d.items()",
+        "d.values()",
+        "d.getkeys()"
+      ],
+      "ans": 0
+    },
+    {
+      "q": "Để lấy cả key và value khi duyệt dict d, cách nào chuẩn nhất?",
+      "opts": [
+        "for x in d:",
+        "for k, v in d.items():",
+        "for v in d.values():",
+        "for i in range(d):"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của [1,2,2,3] khi chuyển sang set là?",
+      "opts": [
+        "{1,2,2,3}",
+        "{1,2,3}",
+        "[1,2,3]",
+        "(1,2,3)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Trong so sánh tổng quan, cấu trúc nào phù hợp nhất để ánh xạ thông tin hồ sơ sinh viên theo mã số?",
+      "opts": [
+        "List",
+        "Tuple",
+        "Set",
+        "Dictionary"
+      ],
+      "ans": 3
+    },
+    {
+      "q": "Khi cần lưu tập các môn học không trùng và thường xuyên phép giao/hợp, nên chọn?",
+      "opts": [
+        "List",
+        "Set",
+        "Tuple",
+        "Dictionary"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Hàm nào tạo list mới đã sắp xếp từ list a mà không sửa list gốc?",
+      "opts": [
+        "a.sort()",
+        "sorted(a)",
+        "a.sorted()",
+        "sort(a, in_place=True)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Lệnh nào xóa và trả về value của key 'x' trong dict d?",
+      "opts": [
+        "d.remove('x')",
+        "d.pop('x')",
+        "d.delete('x')",
+        "d.cut('x')"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Khi cần dữ liệu có thể lặp và truy cập theo index cho bài toán sliding window, cấu trúc hợp lý nhất là?",
+      "opts": [
+        "Set",
+        "Tuple",
+        "List",
+        "Dictionary"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Cấu trúc nào sau đây không chấp nhận phần tử mutable làm phần tử con trực tiếp?",
+      "opts": [
+        "List",
+        "Tuple",
+        "Set",
+        "Dictionary"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Kết quả của d = {'a': 1}; d.get('b', 0) là gì?",
+      "opts": [
+        "Error",
+        "None",
+        "0",
+        "'b'"
+      ],
+      "ans": 2
+    }
+  ],
+  "coding_tasks": [
+    {
+      "q": "Tạo list a gồm các số 1, 2, 3, 4",
+      "m": "Viết code tạo list a = [1, 2, 3, 4]",
+      "r": "a\\s*=\\s*\\[\\s*1\\s*,\\s*2\\s*,\\s*3\\s*,\\s*4\\s*\\]",
+      "h": "a = [1, 2, 3, 4]",
+      "w": "List dùng ngoặc vuông và phần tử ngăn bởi dấu phẩy."
+    },
+    {
+      "q": "Thêm số 10 vào cuối list a",
+      "m": "Viết lệnh thêm 10 vào cuối list a",
+      "r": "a\\.append\\s*\\(\\s*10\\s*\\)",
+      "h": "a.append(10)",
+      "w": "append dùng để thêm phần tử vào cuối list."
+    },
+    {
+      "q": "Tạo set s từ list a",
+      "m": "Viết code chuyển list a thành set s",
+      "r": "s\\s*=\\s*set\\s*\\(\\s*a\\s*\\)",
+      "h": "s = set(a)",
+      "w": "Set loại bỏ phần tử trùng."
+    },
+    {
+      "q": "Lấy giao hai set s1 và s2",
+      "m": "Viết biểu thức lấy giao của s1 và s2",
+      "r": "s1\\s*&\\s*s2|s1\\.intersection\\s*\\(\\s*s2\\s*\\)",
+      "h": "s1 & s2",
+      "w": "Giao là phần chung giữa hai tập."
+    },
+    {
+      "q": "Tạo tuple point có giá trị 5 và 8",
+      "m": "Viết code tạo tuple point = (5, 8)",
+      "r": "point\\s*=\\s*\\(\\s*5\\s*,\\s*8\\s*\\)",
+      "h": "point = (5, 8)",
+      "w": "Tuple dùng ngoặc đơn, phù hợp dữ liệu cố định."
+    },
+    {
+      "q": "Tạo tuple một phần tử t chỉ chứa số 9",
+      "m": "Viết code tạo tuple một phần tử t",
+      "r": "t\\s*=\\s*\\(\\s*9\\s*,\\s*\\)",
+      "h": "t = (9,)",
+      "w": "Tuple 1 phần tử bắt buộc có dấu phẩy cuối."
+    },
+    {
+      "q": "Tạo dict student có name='Lan' và age=20",
+      "m": "Viết code tạo dictionary student",
+      "r": "student\\s*=\\s*\\{\\s*['\"]name['\"]\\s*:\\s*['\"]Lan['\"]\\s*,\\s*['\"]age['\"]\\s*:\\s*20\\s*\\}",
+      "h": "student = {'name': 'Lan', 'age': 20}",
+      "w": "Dict dùng cặp key:value trong ngoặc nhọn."
+    },
+    {
+      "q": "Lấy giá trị key 'name' từ dict student",
+      "m": "Viết biểu thức lấy name trong student",
+      "r": "student\\s*\\[\\s*['\"]name['\"]\\s*\\]|student\\.get\\s*\\(\\s*['\"]name['\"]\\s*\\)",
+      "h": "student['name'] hoặc student.get('name')",
+      "w": "Dùng get an toàn hơn khi có thể thiếu key."
+    },
+    {
+      "q": "Cập nhật điểm score=100 trong dict d",
+      "m": "Viết code cập nhật d['score'] = 100",
+      "r": "d\\s*\\[\\s*['\"]score['\"]\\s*\\]\\s*=\\s*100",
+      "h": "d['score'] = 100",
+      "w": "Bạn có thể cập nhật trực tiếp value theo key."
+    },
+    {
+      "q": "So sánh: chuyển list a thành set rồi đếm phần tử",
+      "m": "Viết biểu thức đếm số phần tử khác nhau trong list a",
+      "r": "len\\s*\\(\\s*set\\s*\\(\\s*a\\s*\\)\\s*\\)",
+      "h": "len(set(a))",
+      "w": "Set là lựa chọn chuẩn để xử lý trùng lặp."
+    },
+    {
+      "q": "Lấy key-value của dict d bằng vòng lặp",
+      "m": "Viết vòng lặp duyệt key và value trong dict d",
+      "r": "for\\s+\\w+\\s*,\\s*\\w+\\s+in\\s+d\\.items\\s*\\(\\s*\\)\\s*:",
+      "h": "for k, v in d.items():",
+      "w": "items() trả về cặp key-value để unpack."
+    },
+    {
+      "q": "Chuyển tuple t sang list",
+      "m": "Viết code chuyển tuple t thành list lst",
+      "r": "lst\\s*=\\s*list\\s*\\(\\s*t\\s*\\)",
+      "h": "lst = list(t)",
+      "w": "list() giúp chuyển đổi để có thể chỉnh sửa dữ liệu."
+    }
+  ]
+}

@@ -107,6 +107,19 @@ const questionBank3 = [
     { m: "Kiểm tra chuỗi s là số", r: /s\.isdigit\s*\(\s*\)/, h: "s.isdigit()", w: "Hàm này cực kỳ hữu ích để validate dữ liệu." }
 ];
 
+const questionBank4 = [
+    { m: "Tạo list nums gồm 1, 2, 3", r: /nums\s*=\s*\[\s*1\s*,\s*2\s*,\s*3\s*\]/, h: "nums = [1, 2, 3]", w: "List dùng ngoặc vuông và giữ thứ tự phần tử." },
+    { m: "Tạo set tags từ list a", r: /tags\s*=\s*set\s*\(\s*a\s*\)/, h: "tags = set(a)", w: "Set giúp loại phần tử trùng lặp." },
+    { m: "Tạo tuple point gồm 2 giá trị 10 và 20", r: /point\s*=\s*\(\s*10\s*,\s*20\s*\)/, h: "point = (10, 20)", w: "Tuple là cấu trúc không thể thay đổi sau khi tạo." },
+    { m: "Tạo dict student có key 'name' và 'age'", r: /student\s*=\s*\{\s*['\"]name['\"]\s*:\s*['\"].+['\"]\s*,\s*['\"]age['\"]\s*:\s*\d+\s*\}/, h: "student = {'name': 'An', 'age': 20}", w: "Dictionary lưu theo cặp key:value." },
+    { m: "Lấy phần tử cuối của list arr", r: /arr\s*\[\s*-1\s*\]/, h: "arr[-1]", w: "Chỉ số âm -1 là phần tử cuối cùng." },
+    { m: "Kiểm tra key 'id' có trong dict d", r: /['\"]id['\"]\s+in\s+d/, h: "'id' in d", w: "Toán tử in dùng được cho dict key." },
+    { m: "Lấy giao của hai set s1 và s2", r: /s1\s*&\s*s2|s1\.intersection\s*\(\s*s2\s*\)/, h: "s1 & s2", w: "Giao set là phần tử xuất hiện trong cả hai tập." },
+    { m: "Nối 2 tuple t1 và t2", r: /t1\s*\+\s*t2/, h: "t1 + t2", w: "Tuple có thể nối bằng toán tử +." },
+    { m: "Cập nhật key 'score' trong dict d thành 100", r: /d\s*\[\s*['\"]score['\"]\s*\]\s*=\s*100/, h: "d['score'] = 100", w: "Dictionary cho phép thay đổi value theo key." },
+    { m: "Chuyển list a sang tuple", r: /tuple\s*\(\s*a\s*\)/, h: "tuple(a)", w: "Dùng tuple() để ép kiểu từ list sang tuple." }
+];
+
 let selectedModule = 1;
 let activeQuestions = [];
 const directions = ["Góc Trái", "Chính Giữa", "Góc Phải"];
@@ -626,7 +639,8 @@ async function initGame() {
         let bank;
         if (selectedModule === 1) bank = questionBank;
         else if (selectedModule === 2) bank = questionBank2;
-        else bank = questionBank3;
+        else if (selectedModule === 3) bank = questionBank3;
+        else bank = questionBank4;
 
         activeQuestions = [...bank].sort(() => Math.random() - 0.5).slice(0, 10);
         showQuestion();
@@ -820,9 +834,19 @@ function shoot(dir) {
     animateShot(dir, isGoal, function () {
         if (isGoal) {
             score++;
+            const goalAudio = document.getElementById('goalAudio');
+            if (goalAudio) {
+                goalAudio.currentTime = 0;
+                goalAudio.play().catch(e => console.log("Goal audio play failed:", e));
+            }
             document.getElementById('result').style.color = '#2ecc71';
             document.getElementById('result').innerText = `VÀOOO! Thủ môn bó tay trước cú sút vào ${directions[dir]}!`;
         } else {
+            const saveAudio = document.getElementById('saveAudio');
+            if (saveAudio) {
+                saveAudio.currentTime = 0;
+                saveAudio.play().catch(e => console.log("Save audio play failed:", e));
+            }
             document.getElementById('result').style.color = '#e74c3c';
             document.getElementById('result').innerText = `KHÔNG VÀO! Thủ môn xuất sắc ở ${directions[dir]}!`;
         }
