@@ -65,6 +65,25 @@ const questionBank = [
     { m: "Thoát vòng lặp lập tức", r: /\bbreak\b/, h: "break", w: "Dùng lệnh break để dừng vòng lặp ngay chưa cần xong." }
 ];
 
+// Fallback trắc nghiệm Module 1 (lấy theo nội dung module1.json)
+const module1McqFallback = [
+    { q: "Lệnh nào dùng để in ra màn hình?", opts: ["show()", "print()", "input()", "write()"], ans: 1 },
+    { q: "Lệnh nào dùng để nhập dữ liệu từ bàn phím?", opts: ["get()", "scan()", "input()", "read()"], ans: 2 },
+    { q: "Biến nào sau đây là hợp lệ?", opts: ["1so", "so-1", "so_1", "so 1"], ans: 2 },
+    { q: "Kiểu dữ liệu nào là số nguyên?", opts: ["3.5", "\"3\"", "3", "'3.0'"], ans: 2 },
+    { q: "Toán tử nào dùng để so sánh bằng?", opts: ["=", "==", "!=", "<="], ans: 1 },
+    { q: "Vòng lặp nào dùng khi chưa biết trước số lần lặp?", opts: ["for", "while", "if", "elif"], ans: 1 },
+    { q: "Lệnh nào thêm phần tử vào cuối danh sách?", opts: ["add()", "append()", "insert()", "push()"], ans: 1 },
+    { q: "Danh sách nào hợp lệ?", opts: ["(1,2,3)", "{1,2,3}", "[1,2,3]", "<1,2,3>"], ans: 2 },
+    { q: "Lệnh nào dùng để kết thúc sớm một vòng lặp?", opts: ["stop", "exit", "break", "continue"], ans: 2 },
+    { q: "Hàm nào dùng để lấy độ dài của một danh sách?", opts: ["size()", "count()", "length()", "len()"], ans: 3 },
+    { q: "Cấu trúc nào dùng để kiểm tra điều kiện?", opts: ["if...else", "for...in", "while", "def"], ans: 0 },
+    { q: "Lệnh nào dùng để định nghĩa một hàm?", opts: ["function", "def", "func", "define"], ans: 1 },
+    { q: "Kết quả của: 2 ** 3 là gì?", opts: ["6", "8", "9", "5"], ans: 1 },
+    { q: "Danh sách (List) trong Python có thể chứa nhiều kiểu dữ liệu khác nhau không?", opts: ["Có", "Không", "Chỉ chứa số", "Chỉ chứa chuỗi"], ans: 0 },
+    { q: "Hàm input() trả về kiểu dữ liệu gì?", opts: ["int", "string", "float", "bool"], ans: 1 }
+];
+
 // Ngân hàng câu hỏi Module 2: Cấu trúc dữ liệu & Giải thuật
 const questionBank2 = [
     { m: "Thêm 'Cam' vào tập hợp (set) s", r: /s\.add\s*\(\s*['\"]Cam['\"]\s*\)/, h: "s.add('Cam')", w: "Set dùng hàm .add để thêm phần tử mới." },
@@ -622,11 +641,42 @@ async function initGame() {
         const response = await fetch(`module${selectedModule}.json`);
         const data = await response.json();
 
+        const pickRandom = (arr, count) => [...arr].sort(() => Math.random() - 0.5).slice(0, count);
+        const dedupeQuestions = (arr) => {
+            const seen = new Set();
+            return arr.filter((q) => {
+                const key = `${q.type || ''}|${q.q || ''}|${q.m || ''}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+        };
+
         const mcqs = (data.questions || []).map(q => ({ ...q, type: 'mcq' }));
         const codes = (data.coding_tasks || []).map(q => ({ ...q, type: 'code', m: q.q }));
 
-        const allQuestions = [...mcqs, ...codes];
-        activeQuestions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
+        let allQuestions = [...mcqs, ...codes];
+        if (selectedModule === 1) {
+            const extraMcqs = module1McqFallback.map(q => ({ ...q, type: 'mcq' }));
+            const extraCodes = questionBank.map(q => ({ ...q, type: 'code' }));
+
+            const basePool = dedupeQuestions([...mcqs, ...codes]);
+            const extraPool = dedupeQuestions([...extraMcqs, ...extraCodes]);
+
+            const basePicked = pickRandom(basePool, Math.min(6, basePool.length));
+            const extraPicked = pickRandom(extraPool, Math.min(4, extraPool.length));
+
+            const merged = dedupeQuestions([...basePicked, ...extraPicked]);
+            if (merged.length < 10) {
+                const fillerPool = dedupeQuestions([...basePool, ...extraPool]);
+                const remaining = fillerPool.filter((q) => !merged.some((m) => (m.q || m.m) === (q.q || q.m)));
+                allQuestions = [...merged, ...pickRandom(remaining, 10 - merged.length)];
+            } else {
+                allQuestions = merged;
+            }
+        }
+
+        activeQuestions = pickRandom(dedupeQuestions(allQuestions), 10);
 
         currentQuestion = 0;
         score = 0;
@@ -637,12 +687,20 @@ async function initGame() {
     } catch (e) {
         console.error("Lỗi tải câu hỏi:", e);
         let bank;
-        if (selectedModule === 1) bank = questionBank;
+        if (selectedModule === 1) bank = [...module1McqFallback, ...questionBank];
         else if (selectedModule === 2) bank = questionBank2;
         else if (selectedModule === 3) bank = questionBank3;
         else bank = questionBank4;
 
-        activeQuestions = [...bank].sort(() => Math.random() - 0.5).slice(0, 10);
+        const normalizedFallback = bank.map((q) => {
+            if (q.type) return q;
+            if (Array.isArray(q.opts) && typeof q.ans === 'number') {
+                return { ...q, type: 'mcq' };
+            }
+            return { ...q, type: 'code' };
+        });
+
+        activeQuestions = normalizedFallback.sort(() => Math.random() - 0.5).slice(0, 10);
         showQuestion();
     }
 }
