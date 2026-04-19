@@ -150,6 +150,8 @@ let shooting = false;
 let helps = { call: false, wise: false };
 let playerName = "L";
 let playerNumber = "22";
+let consecutiveCorrect = 0;
+let isPowerShot = false;
 
 const characterConfigs = [
     { name: "CR7", skin: "#c8a07a", hair: "#1a1a1a", hairStyle: 'fade', browType: 'thick', facialHair: null, faceImg: "img/face_ronaldo.png" },
@@ -194,7 +196,8 @@ let ball = { ...ballStart, rotation: 0 };
 let goalie = {
     x: cw / 2, y: 90, rotation: 0, state: 'idle',
     shirt: '#f1c40f', skin: '#4e342e', hair: '#111',
-    name: 'ONANA', number: '24', hairStyle: 'buzz', browType: 'normal', facialHair: null
+    name: 'ONANA', number: '24', hairStyle: 'buzz', browType: 'normal', facialHair: null,
+    trail: []
 };
 let player = {
     x: cw / 2 - 40, y: ch - 60, state: 'idle', thought: null,
@@ -241,7 +244,7 @@ function drawField() {
     // Scoreboard on field
     ctx.save();
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.roundRect(10, 10, 125, 75, 12);
+    ctx.roundRect(10, 10, 125, 100, 12); // Tăng chiều cao để hiện PowerShot
     ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.font = '700 13px Outfit';
@@ -254,15 +257,41 @@ function drawField() {
         hearts += (i < lives) ? "❤️" : "🖤";
     }
     ctx.fillText("TIM: " + hearts, 20, 66);
+
+    // Power Shot indicator
+    ctx.fillStyle = '#fff';
+    ctx.font = '700 11px Outfit';
+    ctx.fillText("POWERSHOT: ", 20, 85);
+    for (let i = 0; i < 3; i++) {
+        ctx.fillStyle = i < consecutiveCorrect ? '#ff4500' : '#444';
+        ctx.beginPath();
+        ctx.arc(95 + i * 12, 81, 4, 0, Math.PI * 2);
+        ctx.fill();
+        if (i < consecutiveCorrect) {
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ff4500';
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+    }
+    if (isPowerShot) {
+        ctx.fillStyle = '#ff4500';
+        ctx.font = '900 12px Outfit';
+        ctx.fillText("🔥 SẴN SÀNG!", 20, 102);
+    }
     ctx.restore();
 }
 
-function drawChibi(char, rotation = 0, scale = 1) {
+function drawChibi(char, rotation = 0, scale = 1, isTrail = false) {
     const { x, y, shirt, skin, name, number, state } = char;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(scale, scale);
     ctx.rotate(rotation);
+
+    if (isTrail) {
+        ctx.globalAlpha = 0.3;
+    }
 
     const sc = skin;
     const isGoalie = (name || "").toUpperCase() === 'ONANA';
@@ -343,8 +372,15 @@ function drawChibi(char, rotation = 0, scale = 1) {
     // --- Arms ---
     ctx.strokeStyle = sc; ctx.lineWidth = 7; ctx.lineCap = 'round';
     if (isGoalie) {
-        if (state === 'diving') {
-            ctx.beginPath(); ctx.moveTo(-13, 7); ctx.lineTo(-30, -6); ctx.moveTo(13, 7); ctx.lineTo(30, -6); ctx.stroke();
+        if (state === 'diving' || state === 'superman') {
+            // Superman pose: arms extended forward
+            ctx.beginPath();
+            ctx.moveTo(-13, -15); ctx.lineTo(-45, -25);
+            ctx.moveTo(13, -15); ctx.lineTo(45, -25);
+            ctx.stroke();
+            // Optional: Gloves
+            ctx.fillStyle = '#fff';
+            rr(-48, -30, 10, 10, 3); rr(38, -30, 10, 10, 3);
         } else if (state === 'catching') {
             ctx.beginPath(); ctx.moveTo(-13, 9); ctx.lineTo(-22, -9); ctx.moveTo(13, 9); ctx.lineTo(22, -9); ctx.stroke();
         } else {
@@ -412,14 +448,14 @@ function drawChibi(char, rotation = 0, scale = 1) {
         ctx.fillStyle = hexDarken(char.hair || '#111', 0.8);
         ctx.globalAlpha = 0.5;
         if (fh === 'beard') {
-            ctx.beginPath(); ctx.arc(0, -11, 23.2, 0.4, Math.PI - 0.4); 
+            ctx.beginPath(); ctx.arc(0, -11, 23.2, 0.4, Math.PI - 0.4);
             ctx.lineTo(0, -2); ctx.fill();
         } else if (fh === 'goatee') {
             ctx.beginPath(); ctx.ellipse(0, -5, 7, 8, 0, 0, Math.PI * 2); ctx.fill();
         } else if (fh === 'mixi-style') {
             // Refined Mixi beard: Thin mustache + sharp goatee
             ctx.fillRect(-12, -14, 24, 1.8); // Mustache
-            ctx.beginPath(); 
+            ctx.beginPath();
             ctx.moveTo(-3, -10); ctx.lineTo(0, -3); ctx.lineTo(3, -10); ctx.fill(); // Soul patch
             ctx.beginPath(); ctx.arc(0, -4, 5, 0, Math.PI); ctx.stroke(); // Chin shadow
         }
@@ -505,6 +541,26 @@ function drawBall() {
     ctx.fillStyle = 'rgba(0,0,0,0.2)';
     ctx.beginPath(); ctx.ellipse(0, 18, 14, 6, 0, 0, Math.PI * 2); ctx.fill();
 
+    // Fireball effect for Power Shot
+    if (isPowerShot && ball.y < ballStart.y - 20) {
+        const fireGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, 35);
+        fireGrad.addColorStop(0, 'rgba(255, 165, 0, 0.8)');
+        fireGrad.addColorStop(0.5, 'rgba(255, 69, 0, 0.4)');
+        fireGrad.addColorStop(1, 'rgba(255, 0, 0, 0)');
+        ctx.fillStyle = fireGrad;
+        ctx.beginPath(); ctx.arc(0, 0, 35, 0, Math.PI * 2); ctx.fill();
+
+        // Fire trails
+        for (let i = 0; i < 8; i++) {
+            ctx.fillStyle = `rgba(255, ${100 + Math.random() * 100}, 0, ${0.3 + Math.random() * 0.5})`;
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 15 + Math.random() * 20;
+            ctx.beginPath();
+            ctx.arc(Math.cos(angle) * dist, Math.sin(angle) * dist + 10, 3 + Math.random() * 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
     // 3D Ball Base
     const ballGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, 15);
     ballGrad.addColorStop(0, '#fff');
@@ -568,6 +624,17 @@ function drawThoughtBubble(x, y, text) {
 
 function render() {
     drawField();
+
+    // Draw goalie trails
+    if (goalie.trail && goalie.trail.length > 0) {
+        goalie.trail.forEach((t, i) => {
+            ctx.save();
+            ctx.globalAlpha = (i + 1) / (goalie.trail.length + 1) * 0.4;
+            drawChibi({ ...goalie, x: t.x, y: t.y, state: t.state }, t.rotation, 1.8 * t.scale, true);
+            ctx.restore();
+        });
+    }
+
     drawChibi(goalie, goalie.rotation, 1.8);
     drawChibi(player, 0, 1.8);
     if (player.thought) {
@@ -584,7 +651,7 @@ function animateShot(dir, isGoal, cb) {
     ];
     const target = targets[dir];
     let goalieDiveDir = !isGoal ? dir : (dir + (Math.random() < 0.5 ? 1 : 2)) % 3;
-    const goalieTargets = [goalPos.x - 100, goalPos.x, goalPos.x + 100];
+    const goalieTargets = [goalPos.x - 120, goalPos.x, goalPos.x + 120];
     const gTargetX = goalieTargets[goalieDiveDir];
 
     let runT = 0;
@@ -605,6 +672,7 @@ function animateShot(dir, isGoal, cb) {
 
     function startBallShot() {
         let t = 0;
+        const isSuperman = Math.random() > 0.3 || isPowerShot;
         function step() {
             t += 0.022;
             const startX = ballStart.x, startY = ballStart.y;
@@ -613,10 +681,26 @@ function animateShot(dir, isGoal, cb) {
             ball.scale = 1 - t * 0.45;
             ball.rotation += 0.4;
             if (t > 0.12) {
-                goalie.state = !isGoal && t > 0.6 ? 'catching' : 'diving';
-                goalie.x += (gTargetX - goalie.x) * 0.12;
-                if (goalieDiveDir === 0) goalie.rotation = -1.1 * (t - 0.12);
-                if (goalieDiveDir === 2) goalie.rotation = 1.1 * (t - 0.12);
+                goalie.state = !isGoal && t > 0.6 ? 'catching' : (isSuperman ? 'superman' : 'diving');
+
+                // Track trail
+                goalie.trail.push({ x: goalie.x, y: goalie.y, rotation: goalie.rotation, state: goalie.state, scale: 1 - (t * 0.1) });
+                if (goalie.trail.length > 5) goalie.trail.shift();
+
+                // Superman fly logic: move further and tilt more
+                if (goalie.state === 'superman') {
+                    goalie.x += (gTargetX - goalie.x) * 0.18;
+                    goalie.y = 90 - Math.sin((t - 0.12) / (1 - 0.12) * Math.PI) * 60; // Bay cao hơn nữa
+
+                    // Smooth rotation for superman
+                    const rotTarget = (goalieDiveDir === 0) ? -Math.PI / 2 : (goalieDiveDir === 2 ? Math.PI / 2 : 0);
+                    goalie.rotation += (rotTarget - goalie.rotation) * 0.2;
+                } else {
+                    goalie.x += (gTargetX - goalie.x) * 0.12;
+                    if (goalieDiveDir === 0) goalie.rotation = -1.1 * (t - 0.12);
+                    if (goalieDiveDir === 2) goalie.rotation = 1.1 * (t - 0.12);
+                }
+
                 if (!isGoal && t > 0.82) {
                     ball.x = goalie.x;
                     ball.y = goalie.y + 40;
@@ -628,6 +712,8 @@ function animateShot(dir, isGoal, cb) {
                 player.state = 'idle';
                 if (!isGoal) { goalie.state = 'smile'; ball.x = goalie.x; ball.y = goalie.y - 10; }
                 else goalie.state = 'sad';
+                goalie.y = 90; // Reset height
+                goalie.trail = []; // Clear trail
                 render(); cb();
             }
         }
@@ -681,6 +767,8 @@ async function initGame() {
         currentQuestion = 0;
         score = 0;
         lives = 3;
+        consecutiveCorrect = 0;
+        isPowerShot = false;
         helps = { call: false, wise: false };
         document.querySelectorAll('.lifeline-btn').forEach(b => b.classList.remove('used'));
         showQuestion();
@@ -807,7 +895,7 @@ function showQuestion() {
     }
 
     ball = { ...ballStart, rotation: 0 };
-    goalie.x = cw / 2; goalie.y = 90; goalie.rotation = 0; goalie.state = 'idle';
+    goalie.x = cw / 2; goalie.y = 90; goalie.rotation = 0; goalie.state = 'idle'; goalie.trail = [];
     player.x = cw / 2 - 160; player.y = ch - 100; player.state = 'idle'; player.thought = null;
     render();
 }
@@ -827,6 +915,8 @@ function closeMixiNotice() {
 
 function handleLifeLoss() {
     lives--;
+    consecutiveCorrect = 0; // Reset combo
+    isPowerShot = false;
     render();
     if (lives <= 0) {
         showGameOver();
@@ -865,7 +955,13 @@ function checkMCQ(idx) {
     if (shooting) return;
     const q = activeQuestions[currentQuestion];
     if (idx === q.ans) {
-        document.getElementById('result').innerText = 'Chính xác! Bạn đã sẵn sàng sút bóng.';
+        consecutiveCorrect++;
+        if (consecutiveCorrect >= 3) {
+            isPowerShot = true;
+            document.getElementById('result').innerHTML = '<span class="powershot-text">🔥 POWERSHOT KÍCH HOẠT! 🔥</span><br>Bàn thắng tiếp theo sẽ được x2!';
+        } else {
+            document.getElementById('result').innerText = 'Chính xác! Bạn đã sẵn sàng sút bóng.';
+        }
         document.getElementById('directionBox').style.display = 'block';
         document.getElementById('optsContainer').style.display = "none";
     } else {
@@ -884,7 +980,13 @@ function submitAnswer() {
     const regex = typeof q.r === 'string' ? new RegExp(q.r) : q.r;
 
     if (regex.test(val)) {
-        document.getElementById('result').innerText = 'Chính xác! Bạn đã sẵn sàng sút bóng.';
+        consecutiveCorrect++;
+        if (consecutiveCorrect >= 3) {
+            isPowerShot = true;
+            document.getElementById('result').innerHTML = '<span class="powershot-text">🔥 POWERSHOT KÍCH HOẠT! 🔥</span><br>Bàn thắng tiếp theo sẽ được x2!';
+        } else {
+            document.getElementById('result').innerText = 'Chính xác! Bạn đã sẵn sàng sút bóng.';
+        }
         document.getElementById('directionBox').style.display = 'block';
         document.getElementById("answer").style.display = "none";
         document.getElementById("submitBtn").style.display = "none";
@@ -904,14 +1006,16 @@ function shoot(dir) {
     const isGoal = dir !== goalieGuess;
     animateShot(dir, isGoal, function () {
         if (isGoal) {
-            score++;
+            const addedScore = isPowerShot ? 2 : 1;
+            score += addedScore;
             const goalAudio = document.getElementById('goalAudio');
             if (goalAudio) {
                 goalAudio.currentTime = 0;
                 goalAudio.play().catch(e => console.log("Goal audio play failed:", e));
             }
-            document.getElementById('result').style.color = '#2ecc71';
-            document.getElementById('result').innerText = `VÀOOO! Thủ môn bó tay trước cú sút vào ${directions[dir]}!`;
+            document.getElementById('result').style.color = isPowerShot ? '#ff4500' : '#2ecc71';
+            const shotMsg = isPowerShot ? `SIÊU PHẨM LỬA! Ghi được x2 bàn thắng (${addedScore})!` : `VÀOOO! Thủ môn bó tay trước cú sút vào ${directions[dir]}!`;
+            document.getElementById('result').innerText = shotMsg;
         } else {
             const saveAudio = document.getElementById('saveAudio');
             if (saveAudio) {
@@ -923,6 +1027,10 @@ function shoot(dir) {
         }
         setTimeout(() => {
             currentQuestion++;
+            if (isPowerShot) {
+                isPowerShot = false;
+                consecutiveCorrect = 0;
+            }
             shooting = false;
             showQuestion();
         }, 2000);
@@ -1037,9 +1145,7 @@ function showRedEnvelopes() {
         { name: "5.000 VND", icon: "💵" },
         { name: "Ra chơi sớm 5 phút", icon: "🔔" },
         { name: "Chúc bạn may mắn lần sau", icon: "🍀" },
-        { name: "Khô gà đè tem", icon: "🍗" },
-        { name: "Khô gà đè tem", icon: "🍗" },
-        { name: "Chúc bạn may mắn lần sau", icon: "🍀" },
+        { name: "Chúc bạn may mắn lần sau", icon: "🍀" }
     ];
     prizes.sort(() => Math.random() - 0.5);
     prizes.forEach((prize, index) => {
