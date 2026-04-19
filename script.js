@@ -727,8 +727,10 @@ function selectClub(clubId, el) {
 function startGame() {
     const nameInput = document.getElementById('playerNameInput').value.trim();
     const numInput = document.getElementById('playerNumberInput').value.trim();
+    const gkNameInput = document.getElementById('gkNameInput').value.trim();
+    const gkNumInput = document.getElementById('gkNumberInput').value.trim();
 
-    if (!nameInput || !numInput) {
+    if (!nameInput || !numInput || !gkNameInput || !gkNumInput) {
         document.getElementById('mixiNotice').style.display = 'flex';
         return;
     }
@@ -748,11 +750,16 @@ function startGame() {
     player.body = charConfig.body;
     player.shirt = selectedShirtColor;
 
+    goalie.name = gkNameInput.toUpperCase();
+    goalie.number = gkNumInput;
+
     playerName = player.name;
     playerNumber = player.number;
 
     localStorage.setItem('penalty_playerName', player.name);
     localStorage.setItem('penalty_playerNumber', player.number);
+    localStorage.setItem('penalty_gkName', goalie.name);
+    localStorage.setItem('penalty_gkNumber', goalie.number);
     localStorage.setItem('penalty_characterIndex', characterIndex);
     localStorage.setItem('penalty_shirtColor', selectedShirtColor);
     localStorage.setItem('penalty_clubId', selectedClubId);
@@ -808,8 +815,14 @@ function showQuestion() {
 function closeMixiNotice() {
     document.getElementById('mixiNotice').style.display = 'none';
     const nameInput = document.getElementById('playerNameInput').value.trim();
+    const numInput = document.getElementById('playerNumberInput').value.trim();
+    const gkNameInput = document.getElementById('gkNameInput').value.trim();
+    const gkNumInput = document.getElementById('gkNumberInput').value.trim();
+
     if (!nameInput) document.getElementById('playerNameInput').focus();
-    else document.getElementById('playerNumberInput').focus();
+    else if (!numInput) document.getElementById('playerNumberInput').focus();
+    else if (!gkNameInput) document.getElementById('gkNameInput').focus();
+    else if (!gkNumInput) document.getElementById('gkNumberInput').focus();
 }
 
 function handleLifeLoss() {
@@ -1100,11 +1113,15 @@ function openEnvelope(index) {
 window.onload = function () {
     const savedName = localStorage.getItem('penalty_playerName');
     const savedNumber = localStorage.getItem('penalty_playerNumber');
+    const savedGkName = localStorage.getItem('penalty_gkName');
+    const savedGkNumber = localStorage.getItem('penalty_gkNumber');
     const savedChar = localStorage.getItem('penalty_characterIndex');
     const savedClub = localStorage.getItem('penalty_clubId');
 
     if (savedName) document.getElementById('playerNameInput').value = savedName;
     if (savedNumber) document.getElementById('playerNumberInput').value = savedNumber;
+    if (savedGkName) document.getElementById('gkNameInput').value = savedGkName;
+    if (savedGkNumber) document.getElementById('gkNumberInput').value = savedGkNumber;
 
     if (savedChar !== null) {
         selectChar(parseInt(savedChar));

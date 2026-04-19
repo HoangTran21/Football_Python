@@ -1109,6 +1109,25 @@ button:hover {
     transform: translateY(-2px);
 }
 
+.gk-bar {
+    background: rgba(241, 196, 15, 0.1);
+    border-color: rgba(241, 196, 15, 0.2);
+    margin-top: -15px;
+}
+
+.gk-bar .input-group label {
+    color: #d35400;
+}
+
+.gk-bar .input-group input:focus {
+    border-color: #f39c12;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.3);
+}
+
+#gkNameInput {
+    width: 140px;
+}
+
 .start-game-btn.horizontal {
     margin: 0;
     padding: 12px 30px;
