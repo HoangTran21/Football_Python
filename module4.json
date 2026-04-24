@@ -361,6 +361,366 @@
         "'b'"
       ],
       "ans": 2
+    },
+    {
+      "q": "Kết quả của [x**2 for x in range(4)] là gì?",
+      "opts": [
+        "[1, 4, 9, 16]",
+        "[0, 1, 4, 9]",
+        "[0, 2, 4, 6]",
+        "[1, 2, 3, 4]"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Lệnh nào xóa phần tử đầu tiên có giá trị 3 trong list a?",
+      "opts": [
+        "a.pop(3)",
+        "a.delete(3)",
+        "a.remove(3)",
+        "del a(3)"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Kết quả của a = [1,2,3]; a[1:2] là gì?",
+      "opts": [
+        "[1, 2]",
+        "[2]",
+        "[2, 3]",
+        "[1]"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Lệnh nào chèn phần tử 99 vào vị trí index 0 của list a?",
+      "opts": [
+        "a.insert(99, 0)",
+        "a.insert(0, 99)",
+        "a.add(0, 99)",
+        "a.prepend(99)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của a = [1,2,3]; a.extend([4,5]) là gì?",
+      "opts": [
+        "[1,2,3,[4,5]]",
+        "[1,2,3,4,5]",
+        "[[1,2,3],4,5]",
+        "Lỗi"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Phương thức nào đếm số lần xuất hiện của giá trị 2 trong list a?",
+      "opts": [
+        "a.find(2)",
+        "a.count(2)",
+        "a.index(2)",
+        "a.search(2)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của a = [1,2,3]; a.reverse(); print(a) là gì?",
+      "opts": [
+        "[1,2,3]",
+        "[3,2,1]",
+        "None",
+        "Lỗi"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của a = [1,2,3,4,5]; a[::2] là gì?",
+      "opts": [
+        "[2, 4]",
+        "[1, 3, 5]",
+        "[1, 2]",
+        "[5, 3, 1]"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của a = [1,2,3]; b = a; b.append(4); print(a) là gì?",
+      "opts": [
+        "[1,2,3]",
+        "[1,2,3,4]",
+        "Lỗi",
+        "[4,3,2,1]"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Để tạo bản sao độc lập (shallow copy) của list a, cách nào đúng?",
+      "opts": [
+        "b = a",
+        "b = a[:]",
+        "b = &a",
+        "b = a.ref()"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của 'x' in {'x': 1, 'y': 2} là gì?",
+      "opts": [
+        "True",
+        "False",
+        "1",
+        "Lỗi"
+      ],
+      "ans": 0
+    },
+    {
+      "q": "Lệnh nào xóa tất cả phần tử trong dict d?",
+      "opts": [
+        "d.removeAll()",
+        "d.clear()",
+        "d.empty()",
+        "del d[:]"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của list(range(1, 10, 3)) là gì?",
+      "opts": [
+        "[1, 3, 6, 9]",
+        "[1, 4, 7]",
+        "[3, 6, 9]",
+        "[1, 4, 7, 10]"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Phương thức nào trả về vị trí (index) đầu tiên của giá trị 5 trong list a?",
+      "opts": [
+        "a.find(5)",
+        "a.index(5)",
+        "a.search(5)",
+        "a.pos(5)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của (1, 2) + (3,) là gì?",
+      "opts": [
+        "(1, 2, 3)",
+        "(4, 2)",
+        "Lỗi vì tuple immutable",
+        "[1, 2, 3]"
+      ],
+      "ans": 0
+    },
+    {
+      "q": "Kết quả của (1, 2, 3) * 2 là gì?",
+      "opts": [
+        "(2, 4, 6)",
+        "(1, 2, 3, 1, 2, 3)",
+        "Lỗi",
+        "(1, 2, 3, 2)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Phương thức nào đếm số lần xuất hiện của giá trị trong tuple?",
+      "opts": [
+        "t.find(x)",
+        "t.count(x)",
+        "t.search(x)",
+        "t.num(x)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của a, b, *c = [1, 2, 3, 4, 5] thì c bằng gì?",
+      "opts": [
+        "[3, 4, 5]",
+        "(3, 4, 5)",
+        "3",
+        "[1, 2]"
+      ],
+      "ans": 0
+    },
+    {
+      "q": "Phép toán nào lấy hợp (UNION) của hai set?",
+      "opts": [
+        "&",
+        "|",
+        "-",
+        "^"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của {1,2,3} ^ {2,3,4} là gì?",
+      "opts": [
+        "{2, 3}",
+        "{1, 4}",
+        "{1, 2, 3, 4}",
+        "{}"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Phương thức nào xóa phần tử bất kỳ khỏi set và trả về nó?",
+      "opts": [
+        "s.remove()",
+        "s.pop()",
+        "s.delete()",
+        "s.take()"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Sự khác biệt giữa s.remove(x) và s.discard(x) ở set là gì?",
+      "opts": [
+        "Không có sự khác biệt",
+        "remove() báo lỗi nếu x không tồn tại, discard() thì không",
+        "discard() xóa tất cả x, remove() chỉ xóa một",
+        "remove() trả về x, discard() không trả về"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "frozenset khác set ở điểm nào?",
+      "opts": [
+        "frozenset nhanh hơn",
+        "frozenset là immutable, không thêm/xóa phần tử được",
+        "frozenset cho phép phần tử trùng",
+        "frozenset có thứ tự"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của d = {}; d.setdefault('a', []).append(1); print(d) là gì?",
+      "opts": [
+        "{'a': 1}",
+        "{'a': [1]}",
+        "Lỗi",
+        "{}"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của {k: v for k, v in [('a',1), ('b',2)]} là gì?",
+      "opts": [
+        "[('a',1), ('b',2)]",
+        "{'a': 1, 'b': 2}",
+        "{('a',1), ('b',2)}",
+        "Lỗi"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Trong Python 3.7+, dictionary có đảm bảo thứ tự chèn không?",
+      "opts": [
+        "Không, dict không có thứ tự",
+        "Có, dict giữ thứ tự chèn",
+        "Chỉ khi dùng OrderedDict",
+        "Chỉ khi key là số"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của list('hello') là gì?",
+      "opts": [
+        "['hello']",
+        "['h', 'e', 'l', 'l', 'o']",
+        "('h', 'e', 'l', 'l', 'o')",
+        "Lỗi"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Lệnh del a[1:3] trên a = [10,20,30,40,50] cho kết quả gì?",
+      "opts": [
+        "[10, 40, 50]",
+        "[10, 20, 50]",
+        "[20, 30]",
+        "Lỗi"
+      ],
+      "ans": 0
+    },
+    {
+      "q": "Kết quả của min([3, 1, 4, 1, 5]) là gì?",
+      "opts": [
+        "3",
+        "1",
+        "5",
+        "0"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của sum([1, 2, 3, 4]) là gì?",
+      "opts": [
+        "4",
+        "10",
+        "24",
+        "Lỗi"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Lệnh nào kiểm tra set s1 là tập con của set s2?",
+      "opts": [
+        "s1.subset(s2)",
+        "s1.issubset(s2)",
+        "s1.contains(s2)",
+        "s1.in(s2)"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của a = [1,2,3]; a.pop() là gì?",
+      "opts": [
+        "1",
+        "[1,2]",
+        "3",
+        "Lỗi"
+      ],
+      "ans": 2
+    },
+    {
+      "q": "Kết quả của a = [1,2,3]; a.pop(0) là gì?",
+      "opts": [
+        "1",
+        "3",
+        "[2,3]",
+        "0"
+      ],
+      "ans": 0
+    },
+    {
+      "q": "Nested dictionary d = {'a': {'b': 5}}, cách lấy giá trị 5?",
+      "opts": [
+        "d['a']['b']",
+        "d['a.b']",
+        "d.get('a.b')",
+        "d['b']['a']"
+      ],
+      "ans": 0
+    },
+    {
+      "q": "Kết quả của sorted({'c':3, 'a':1, 'b':2}) là gì?",
+      "opts": [
+        "{'a':1, 'b':2, 'c':3}",
+        "['a', 'b', 'c']",
+        "[1, 2, 3]",
+        "Lỗi"
+      ],
+      "ans": 1
+    },
+    {
+      "q": "Kết quả của [i for i in range(5) if i % 2 != 0] là gì?",
+      "opts": [
+        "[0, 2, 4]",
+        "[1, 3]",
+        "[1, 2, 3, 4]",
+        "[0, 1, 2, 3, 4]"
+      ],
+      "ans": 1
     }
   ],
   "coding_tasks": [
@@ -447,6 +807,90 @@
       "r": "lst\\s*=\\s*list\\s*\\(\\s*t\\s*\\)",
       "h": "lst = list(t)",
       "w": "list() giúp chuyển đổi để có thể chỉnh sửa dữ liệu."
+    },
+    {
+      "q": "Xóa phần tử có giá trị 3 khỏi list a",
+      "m": "Viết lệnh xóa phần tử đầu tiên có giá trị 3 trong list a",
+      "r": "a\\.remove\\s*\\(\\s*3\\s*\\)",
+      "h": "a.remove(3)",
+      "w": "remove() xóa phần tử đầu tiên khớp giá trị."
+    },
+    {
+      "q": "Chèn số 99 vào vị trí index 1 của list a",
+      "m": "Viết lệnh chèn 99 vào vị trí index 1",
+      "r": "a\\.insert\\s*\\(\\s*1\\s*,\\s*99\\s*\\)",
+      "h": "a.insert(1, 99)",
+      "w": "insert(index, value) chèn phần tử vào vị trí chỉ định."
+    },
+    {
+      "q": "Tạo list squares chứa bình phương các số từ 1 đến 5 bằng list comprehension",
+      "m": "Viết list comprehension tạo squares",
+      "r": "squares\\s*=\\s*\\[\\s*x\\s*\\*\\*\\s*2\\s+for\\s+x\\s+in\\s+range\\s*\\(\\s*1\\s*,\\s*6\\s*\\)\\s*\\]",
+      "h": "squares = [x**2 for x in range(1, 6)]",
+      "w": "List comprehension tạo danh sách ngắn gọn và Pythonic."
+    },
+    {
+      "q": "Lấy hợp (union) của hai set s1 và s2",
+      "m": "Viết biểu thức lấy hợp của s1 và s2",
+      "r": "s1\\s*\\|\\s*s2|s1\\.union\\s*\\(\\s*s2\\s*\\)",
+      "h": "s1 | s2",
+      "w": "Phép hợp gộp tất cả phần tử từ cả hai set."
+    },
+    {
+      "q": "Xóa key 'age' khỏi dict d và lấy giá trị",
+      "m": "Viết lệnh xóa key 'age' khỏi dict d bằng pop",
+      "r": "d\\.pop\\s*\\(\\s*['\"]age['\"]\\s*\\)",
+      "h": "d.pop('age')",
+      "w": "pop(key) xóa key và trả về value tương ứng."
+    },
+    {
+      "q": "Đảo ngược list a tại chỗ",
+      "m": "Viết lệnh đảo ngược list a (in-place)",
+      "r": "a\\.reverse\\s*\\(\\s*\\)",
+      "h": "a.reverse()",
+      "w": "reverse() đảo ngược list gốc, không tạo list mới."
+    },
+    {
+      "q": "Sắp xếp list a theo thứ tự tăng dần tại chỗ",
+      "m": "Viết lệnh sắp xếp list a tại chỗ",
+      "r": "a\\.sort\\s*\\(\\s*\\)",
+      "h": "a.sort()",
+      "w": "sort() sắp xếp tại chỗ, sorted() tạo list mới."
+    },
+    {
+      "q": "Lấy slice 3 phần tử đầu của list a",
+      "m": "Viết biểu thức lấy 3 phần tử đầu của list a",
+      "r": "a\\s*\\[\\s*:\\s*3\\s*\\]",
+      "h": "a[:3]",
+      "w": "Slice a[:n] lấy n phần tử đầu tiên."
+    },
+    {
+      "q": "Tạo dict comprehension d với key là số từ 1-5, value là bình phương",
+      "m": "Viết dict comprehension tạo d",
+      "r": "d\\s*=\\s*\\{\\s*x\\s*:\\s*x\\s*\\*\\*\\s*2\\s+for\\s+x\\s+in\\s+range\\s*\\(\\s*1\\s*,\\s*6\\s*\\)\\s*\\}",
+      "h": "d = {x: x**2 for x in range(1, 6)}",
+      "w": "Dict comprehension dùng cú pháp {key: value for ...}."
+    },
+    {
+      "q": "Nối list b = [4,5] vào cuối list a",
+      "m": "Viết lệnh nối list b vào cuối list a",
+      "r": "a\\.extend\\s*\\(\\s*b\\s*\\)",
+      "h": "a.extend(b)",
+      "w": "extend() thêm từng phần tử của list b vào a."
+    },
+    {
+      "q": "Kiểm tra set s1 có phải tập con của s2 không",
+      "m": "Viết biểu thức kiểm tra s1 là tập con của s2",
+      "r": "s1\\.issubset\\s*\\(\\s*s2\\s*\\)|s1\\s*<=\\s*s2",
+      "h": "s1.issubset(s2) hoặc s1 <= s2",
+      "w": "issubset() hoặc <= kiểm tra tập con."
+    },
+    {
+      "q": "Xóa tất cả phần tử trong list a",
+      "m": "Viết lệnh xóa sạch list a",
+      "r": "a\\.clear\\s*\\(\\s*\\)",
+      "h": "a.clear()",
+      "w": "clear() xóa tất cả phần tử, giữ lại list rỗng."
     }
   ]
 }

@@ -127,17 +127,107 @@ const questionBank3 = [
 ];
 
 const questionBank4 = [
-    { m: "Tạo list nums gồm 1, 2, 3", r: /nums\s*=\s*\[\s*1\s*,\s*2\s*,\s*3\s*\]/, h: "nums = [1, 2, 3]", w: "List dùng ngoặc vuông và giữ thứ tự phần tử." },
-    { m: "Tạo set tags từ list a", r: /tags\s*=\s*set\s*\(\s*a\s*\)/, h: "tags = set(a)", w: "Set giúp loại phần tử trùng lặp." },
-    { m: "Tạo tuple point gồm 2 giá trị 10 và 20", r: /point\s*=\s*\(\s*10\s*,\s*20\s*\)/, h: "point = (10, 20)", w: "Tuple là cấu trúc không thể thay đổi sau khi tạo." },
-    { m: "Tạo dict student có key 'name' và 'age'", r: /student\s*=\s*\{\s*['\"]name['\"]\s*:\s*['\"].+['\"]\s*,\s*['\"]age['\"]\s*:\s*\d+\s*\}/, h: "student = {'name': 'An', 'age': 20}", w: "Dictionary lưu theo cặp key:value." },
-    { m: "Lấy phần tử cuối của list arr", r: /arr\s*\[\s*-1\s*\]/, h: "arr[-1]", w: "Chỉ số âm -1 là phần tử cuối cùng." },
-    { m: "Kiểm tra key 'id' có trong dict d", r: /['\"]id['\"]\s+in\s+d/, h: "'id' in d", w: "Toán tử in dùng được cho dict key." },
-    { m: "Lấy giao của hai set s1 và s2", r: /s1\s*&\s*s2|s1\.intersection\s*\(\s*s2\s*\)/, h: "s1 & s2", w: "Giao set là phần tử xuất hiện trong cả hai tập." },
-    { m: "Nối 2 tuple t1 và t2", r: /t1\s*\+\s*t2/, h: "t1 + t2", w: "Tuple có thể nối bằng toán tử +." },
-    { m: "Cập nhật key 'score' trong dict d thành 100", r: /d\s*\[\s*['\"]score['\"]\s*\]\s*=\s*100/, h: "d['score'] = 100", w: "Dictionary cho phép thay đổi value theo key." },
-    { m: "Chuyển list a sang tuple", r: /tuple\s*\(\s*a\s*\)/, h: "tuple(a)", w: "Dùng tuple() để ép kiểu từ list sang tuple." }
+    // === CÂU HỎI TRẮC NGHIỆM (MCQ) ===
+    { q: "Cấu trúc dữ liệu nào trong Python giữ THỨ TỰ phần tử và cho phép thay đổi (mutable)?", opts: ["Tuple", "Set", "List", "Frozen set"], ans: 2 },
+    { q: "Cấu trúc dữ liệu nào KHÔNG cho phép phần tử trùng lặp?", opts: ["List", "Tuple", "Set", "String"], ans: 2 },
+    { q: "Tuple có đặc điểm nổi bật nào?", opts: ["Không có thứ tự", "Mutable", "Immutable", "Lưu key-value"], ans: 2 },
+    { q: "Dictionary lưu dữ liệu theo dạng nào?", opts: ["index-value", "key-value", "item-only", "value-key"], ans: 1 },
+    { q: "Lệnh nào thêm phần tử 10 vào cuối list a?", opts: ["a.add(10)", "a.insert(10)", "a.append(10)", "a.push(10)"], ans: 2 },
+    { q: "Phương thức nào thêm phần tử vào set s?", opts: ["s.append(x)", "s.add(x)", "s.insert(x)", "s.push(x)"], ans: 1 },
+    { q: "Để truy cập giá trị theo key 'name' trong dict d an toàn, nên dùng?", opts: ["d.name", "d['name']", "d.get('name')", "d.fetch('name')"], ans: 2 },
+    { q: "So với list, set phù hợp hơn trong bài toán nào?", opts: ["Giữ nguyên thứ tự nhập", "Truy cập theo chỉ số", "Kiểm tra tồn tại nhanh và loại trùng", "Lưu cặp key-value"], ans: 2 },
+    { q: "Trong tuple t = (1, 2, 3), t[0] bằng bao nhiêu?", opts: ["0", "1", "2", "3"], ans: 1 },
+    { q: "Kết quả của len({'a':1, 'b':2, 'c':3}) là gì?", opts: ["2", "3", "1", "Lỗi"], ans: 1 },
+    { q: "Đâu là khai báo tuple một phần tử đúng?", opts: ["(5)", "[5]", "(5,)", "{5}"], ans: 2 },
+    { q: "Phép toán nào lấy phần tử CHUNG của hai set?", opts: ["|", "&", "-", "^"], ans: 1 },
+    { q: "Biểu thức nào lấy phần tử cuối list a?", opts: ["a[last]", "a[len(a)]", "a[-1]", "a(end)"], ans: 2 },
+    { q: "Điều gì đúng với dictionary key?", opts: ["Có thể dùng list làm key", "Có thể trùng key", "Key phải hashable và duy nhất", "Chỉ dùng string làm key"], ans: 2 },
+    { q: "Chuyển list a sang set để loại trùng dùng lệnh nào?", opts: ["list(a)", "set(a)", "tuple(a)", "dict(a)"], ans: 1 },
+    { q: "Set có hỗ trợ truy cập theo chỉ số như s[0] không?", opts: ["Có, luôn luôn", "Không, vì set không có thứ tự chỉ mục", "Chỉ khi set có số", "Chỉ Python 2 mới có"], ans: 1 },
+    { q: "Để cập nhật nhiều key từ dict d2 vào d1 dùng gì?", opts: ["d1.merge(d2)", "d1.add(d2)", "d1.update(d2)", "d1.append(d2)"], ans: 2 },
+    { q: "So sánh đúng về list và tuple là gì?", opts: ["Cả hai đều immutable", "List immutable, tuple mutable", "List mutable, tuple immutable", "Cả hai đều chỉ chứa số"], ans: 2 },
+    { q: "Để đếm tần suất phần tử trong danh sách, cấu trúc nào hay dùng nhất?", opts: ["Set", "Tuple", "Dictionary", "Float"], ans: 2 },
+    { q: "Kết quả của {1,2,3} - {2} là gì?", opts: ["{2}", "{1,3}", "{1,2,3}", "{}"], ans: 1 },
+    { q: "Bài toán giữ thứ tự lịch sử thao tác nên ưu tiên cấu trúc nào?", opts: ["Set", "List", "Tuple", "Boolean"], ans: 1 },
+    { q: "Khi cần dữ liệu cố định không thay đổi để làm key dict, nên dùng?", opts: ["List", "Tuple", "Set", "Dictionary"], ans: 1 },
+    { q: "Dictionary nào sau đây hợp lệ?", opts: ["{[1,2]: 'A'}", "{(1,2): 'A'}", "{{1,2}: 'A'}", "{ {'k':1}: 'A' }"], ans: 1 },
+    { q: "Nếu muốn kiểm tra phần tử x có trong list a nhanh hơn ở dữ liệu lớn, nên làm gì?", opts: ["Chuyển sang tuple", "Chuyển sang set", "Chuyển sang string", "Nhân đôi list"], ans: 1 },
+    { q: "Kết quả của tuple([1,2,3]) là gì?", opts: ["[1,2,3]", "{1,2,3}", "(1,2,3)", "{'1':2,'3':4}"], ans: 2 },
+    { q: "Phát biểu nào đúng về độ phức tạp trung bình tra cứu key trong dict?", opts: ["O(n)", "O(log n)", "O(1)", "O(n^2)"], ans: 2 },
+    { q: "Để lấy danh sách tất cả key trong dict d dùng gì?", opts: ["d.keys()", "d.items()", "d.values()", "d.getkeys()"], ans: 0 },
+    { q: "Để lấy cả key và value khi duyệt dict d, cách nào chuẩn nhất?", opts: ["for x in d:", "for k, v in d.items():", "for v in d.values():", "for i in range(d):"], ans: 1 },
+    { q: "Kết quả của [1,2,2,3] khi chuyển sang set là?", opts: ["{1,2,2,3}", "{1,2,3}", "[1,2,3]", "(1,2,3)"], ans: 1 },
+    { q: "Trong so sánh tổng quan, cấu trúc nào phù hợp nhất để ánh xạ thông tin hồ sơ sinh viên theo mã số?", opts: ["List", "Tuple", "Set", "Dictionary"], ans: 3 },
+    { q: "Khi cần lưu tập các môn học không trùng và thường xuyên phép giao/hợp, nên chọn?", opts: ["List", "Set", "Tuple", "Dictionary"], ans: 1 },
+    { q: "Hàm nào tạo list mới đã sắp xếp từ list a mà không sửa list gốc?", opts: ["a.sort()", "sorted(a)", "a.sorted()", "sort(a, in_place=True)"], ans: 1 },
+    { q: "Lệnh nào xóa và trả về value của key 'x' trong dict d?", opts: ["d.remove('x')", "d.pop('x')", "d.delete('x')", "d.cut('x')"], ans: 1 },
+    { q: "Khi cần dữ liệu có thể lặp và truy cập theo index cho bài toán sliding window, cấu trúc hợp lý nhất là?", opts: ["Set", "Tuple", "List", "Dictionary"], ans: 2 },
+    { q: "Cấu trúc nào sau đây không chấp nhận phần tử mutable làm phần tử con trực tiếp?", opts: ["List", "Tuple", "Set", "Dictionary"], ans: 2 },
+    { q: "Kết quả của d = {'a': 1}; d.get('b', 0) là gì?", opts: ["Error", "None", "0", "'b'"], ans: 2 },
+    { q: "Kết quả của [x**2 for x in range(4)] là gì?", opts: ["[1, 4, 9, 16]", "[0, 1, 4, 9]", "[0, 2, 4, 6]", "[1, 2, 3, 4]"], ans: 1 },
+    { q: "Lệnh nào xóa phần tử đầu tiên có giá trị 3 trong list a?", opts: ["a.pop(3)", "a.delete(3)", "a.remove(3)", "del a(3)"], ans: 2 },
+    { q: "Kết quả của a = [1,2,3]; a[1:2] là gì?", opts: ["[1, 2]", "[2]", "[2, 3]", "[1]"], ans: 1 },
+    { q: "Lệnh nào chèn phần tử 99 vào vị trí index 0 của list a?", opts: ["a.insert(99, 0)", "a.insert(0, 99)", "a.add(0, 99)", "a.prepend(99)"], ans: 1 },
+    { q: "Kết quả của a = [1,2,3]; a.extend([4,5]) là gì?", opts: ["[1,2,3,[4,5]]", "[1,2,3,4,5]", "[[1,2,3],4,5]", "Lỗi"], ans: 1 },
+    { q: "Phương thức nào đếm số lần xuất hiện của giá trị 2 trong list a?", opts: ["a.find(2)", "a.count(2)", "a.index(2)", "a.search(2)"], ans: 1 },
+    { q: "Kết quả của a = [1,2,3]; a.reverse(); print(a) là gì?", opts: ["[1,2,3]", "[3,2,1]", "None", "Lỗi"], ans: 1 },
+    { q: "Kết quả của a = [1,2,3,4,5]; a[::2] là gì?", opts: ["[2, 4]", "[1, 3, 5]", "[1, 2]", "[5, 3, 1]"], ans: 1 },
+    { q: "Kết quả của a = [1,2,3]; b = a; b.append(4); print(a) là gì?", opts: ["[1,2,3]", "[1,2,3,4]", "Lỗi", "[4,3,2,1]"], ans: 1 },
+    { q: "Để tạo bản sao độc lập (shallow copy) của list a, cách nào đúng?", opts: ["b = a", "b = a[:]", "b = &a", "b = a.ref()"], ans: 1 },
+    { q: "Kết quả của 'x' in {'x': 1, 'y': 2} là gì?", opts: ["True", "False", "1", "Lỗi"], ans: 0 },
+    { q: "Lệnh nào xóa tất cả phần tử trong dict d?", opts: ["d.removeAll()", "d.clear()", "d.empty()", "del d[:]"], ans: 1 },
+    { q: "Kết quả của list(range(1, 10, 3)) là gì?", opts: ["[1, 3, 6, 9]", "[1, 4, 7]", "[3, 6, 9]", "[1, 4, 7, 10]"], ans: 1 },
+    { q: "Phương thức nào trả về vị trí (index) đầu tiên của giá trị 5 trong list a?", opts: ["a.find(5)", "a.index(5)", "a.search(5)", "a.pos(5)"], ans: 1 },
+    { q: "Kết quả của (1, 2) + (3,) là gì?", opts: ["(1, 2, 3)", "(4, 2)", "Lỗi vì tuple immutable", "[1, 2, 3]"], ans: 0 },
+    { q: "Kết quả của (1, 2, 3) * 2 là gì?", opts: ["(2, 4, 6)", "(1, 2, 3, 1, 2, 3)", "Lỗi", "(1, 2, 3, 2)"], ans: 1 },
+    { q: "Phương thức nào đếm số lần xuất hiện của giá trị trong tuple?", opts: ["t.find(x)", "t.count(x)", "t.search(x)", "t.num(x)"], ans: 1 },
+    { q: "Kết quả của a, b, *c = [1, 2, 3, 4, 5] thì c bằng gì?", opts: ["[3, 4, 5]", "(3, 4, 5)", "3", "[1, 2]"], ans: 0 },
+    { q: "Phép toán nào lấy hợp (UNION) của hai set?", opts: ["&", "|", "-", "^"], ans: 1 },
+    { q: "Kết quả của {1,2,3} ^ {2,3,4} là gì?", opts: ["{2, 3}", "{1, 4}", "{1, 2, 3, 4}", "{}"], ans: 1 },
+    { q: "Phương thức nào xóa phần tử bất kỳ khỏi set và trả về nó?", opts: ["s.remove()", "s.pop()", "s.delete()", "s.take()"], ans: 1 },
+    { q: "Sự khác biệt giữa s.remove(x) và s.discard(x) ở set là gì?", opts: ["Không có sự khác biệt", "remove() báo lỗi nếu x không tồn tại, discard() thì không", "discard() xóa tất cả x, remove() chỉ xóa một", "remove() trả về x, discard() không trả về"], ans: 1 },
+    { q: "frozenset khác set ở điểm nào?", opts: ["frozenset nhanh hơn", "frozenset là immutable, không thêm/xóa phần tử được", "frozenset cho phép phần tử trùng", "frozenset có thứ tự"], ans: 1 },
+    { q: "Kết quả của d = {}; d.setdefault('a', []).append(1); print(d) là gì?", opts: ["{'a': 1}", "{'a': [1]}", "Lỗi", "{}"], ans: 1 },
+    { q: "Kết quả của {k: v for k, v in [('a',1), ('b',2)]} là gì?", opts: ["[('a',1), ('b',2)]", "{'a': 1, 'b': 2}", "{('a',1), ('b',2)}", "Lỗi"], ans: 1 },
+    { q: "Trong Python 3.7+, dictionary có đảm bảo thứ tự chèn không?", opts: ["Không, dict không có thứ tự", "Có, dict giữ thứ tự chèn", "Chỉ khi dùng OrderedDict", "Chỉ khi key là số"], ans: 1 },
+    { q: "Kết quả của list('hello') là gì?", opts: ["['hello']", "['h', 'e', 'l', 'l', 'o']", "('h', 'e', 'l', 'l', 'o')", "Lỗi"], ans: 1 },
+    { q: "Lệnh del a[1:3] trên a = [10,20,30,40,50] cho kết quả gì?", opts: ["[10, 40, 50]", "[10, 20, 50]", "[20, 30]", "Lỗi"], ans: 0 },
+    { q: "Kết quả của min([3, 1, 4, 1, 5]) là gì?", opts: ["3", "1", "5", "0"], ans: 1 },
+    { q: "Kết quả của sum([1, 2, 3, 4]) là gì?", opts: ["4", "10", "24", "Lỗi"], ans: 1 },
+    { q: "Lệnh nào kiểm tra set s1 là tập con của set s2?", opts: ["s1.subset(s2)", "s1.issubset(s2)", "s1.contains(s2)", "s1.in(s2)"], ans: 1 },
+    { q: "Kết quả của a = [1,2,3]; a.pop() là gì?", opts: ["1", "[1,2]", "3", "Lỗi"], ans: 2 },
+    { q: "Kết quả của a = [1,2,3]; a.pop(0) là gì?", opts: ["1", "3", "[2,3]", "0"], ans: 0 },
+    { q: "Nested dictionary d = {'a': {'b': 5}}, cách lấy giá trị 5?", opts: ["d['a']['b']", "d['a.b']", "d.get('a.b')", "d['b']['a']"], ans: 0 },
+    { q: "Kết quả của sorted({'c':3, 'a':1, 'b':2}) là gì?", opts: ["{'a':1, 'b':2, 'c':3}", "['a', 'b', 'c']", "[1, 2, 3]", "Lỗi"], ans: 1 },
+    { q: "Kết quả của [i for i in range(5) if i % 2 != 0] là gì?", opts: ["[0, 2, 4]", "[1, 3]", "[1, 2, 3, 4]", "[0, 1, 2, 3, 4]"], ans: 1 },
+
+    // === BÀI CODE ===
+    { m: "Tạo list a gồm các số 1, 2, 3, 4", r: /a\s*=\s*\[\s*1\s*,\s*2\s*,\s*3\s*,\s*4\s*\]/, h: "a = [1, 2, 3, 4]", w: "List dùng ngoặc vuông và phần tử ngăn bởi dấu phẩy." },
+    { m: "Thêm số 10 vào cuối list a", r: /a\.append\s*\(\s*10\s*\)/, h: "a.append(10)", w: "append dùng để thêm phần tử vào cuối list." },
+    { m: "Tạo set s từ list a", r: /s\s*=\s*set\s*\(\s*a\s*\)/, h: "s = set(a)", w: "Set loại bỏ phần tử trùng." },
+    { m: "Lấy giao hai set s1 và s2", r: /s1\s*&\s*s2|s1\.intersection\s*\(\s*s2\s*\)/, h: "s1 & s2", w: "Giao là phần chung giữa hai tập." },
+    { m: "Tạo tuple point có giá trị 5 và 8", r: /point\s*=\s*\(\s*5\s*,\s*8\s*\)/, h: "point = (5, 8)", w: "Tuple dùng ngoặc đơn, phù hợp dữ liệu cố định." },
+    { m: "Tạo tuple một phần tử t chỉ chứa số 9", r: /t\s*=\s*\(\s*9\s*,\s*\)/, h: "t = (9,)", w: "Tuple 1 phần tử bắt buộc có dấu phẩy cuối." },
+    { m: "Tạo dict student có name='Lan' và age=20", r: /student\s*=\s*\{\s*['"]name['"]\s*:\s*['"]Lan['"]\s*,\s*['"]age['"]\s*:\s*20\s*\}/, h: "student = {'name': 'Lan', 'age': 20}", w: "Dict dùng cặp key:value trong ngoặc nhọn." },
+    { m: "Lấy giá trị key 'name' từ dict student", r: /student\s*\[\s*['"]name['"]\s*\]|student\.get\s*\(\s*['"]name['"]\s*\)/, h: "student['name'] hoặc student.get('name')", w: "Dùng get an toàn hơn khi có thể thiếu key." },
+    { m: "Cập nhật điểm score=100 trong dict d", r: /d\s*\[\s*['"]score['"]\s*\]\s*=\s*100/, h: "d['score'] = 100", w: "Bạn có thể cập nhật trực tiếp value theo key." },
+    { m: "Chuyển list a thành set rồi đếm phần tử", r: /len\s*\(\s*set\s*\(\s*a\s*\)\s*\)/, h: "len(set(a))", w: "Set là lựa chọn chuẩn để xử lý trùng lặp." },
+    { m: "Lấy key-value của dict d bằng vòng lặp", r: /for\s+\w+\s*,\s*\w+\s+in\s+d\.items\s*\(\s*\)\s*:/, h: "for k, v in d.items():", w: "items() trả về cặp key-value để unpack." },
+    { m: "Chuyển tuple t sang list lst", r: /lst\s*=\s*list\s*\(\s*t\s*\)/, h: "lst = list(t)", w: "list() giúp chuyển đổi để có thể chỉnh sửa dữ liệu." },
+    { m: "Xóa phần tử có giá trị 3 khỏi list a", r: /a\.remove\s*\(\s*3\s*\)/, h: "a.remove(3)", w: "remove() xóa phần tử đầu tiên khớp giá trị." },
+    { m: "Chèn số 99 vào vị trí index 1 của list a", r: /a\.insert\s*\(\s*1\s*,\s*99\s*\)/, h: "a.insert(1, 99)", w: "insert(index, value) chèn phần tử vào vị trí chỉ định." },
+    { m: "Tạo list squares bình phương các số từ 1 đến 5", r: /squares\s*=\s*\[\s*x\s*\*\*\s*2\s+for\s+x\s+in\s+range\s*\(\s*1\s*,\s*6\s*\)\s*\]/, h: "squares = [x**2 for x in range(1, 6)]", w: "List comprehension tạo danh sách ngắn gọn." },
+    { m: "Lấy hợp (union) của hai set s1 và s2", r: /s1\s*\|\s*s2|s1\.union\s*\(\s*s2\s*\)/, h: "s1 | s2", w: "Phép hợp gộp tất cả phần tử từ cả hai set." },
+    { m: "Xóa key 'age' khỏi dict d bằng pop", r: /d\.pop\s*\(\s*['"]age['"]\s*\)/, h: "d.pop('age')", w: "pop(key) xóa key và trả về value tương ứng." },
+    { m: "Đảo ngược list a tại chỗ", r: /a\.reverse\s*\(\s*\)/, h: "a.reverse()", w: "reverse() đảo ngược list gốc, không tạo list mới." },
+    { m: "Sắp xếp list a tăng dần tại chỗ", r: /a\.sort\s*\(\s*\)/, h: "a.sort()", w: "sort() sắp xếp tại chỗ, sorted() tạo list mới." },
+    { m: "Lấy 3 phần tử đầu của list a", r: /a\s*\[\s*:\s*3\s*\]/, h: "a[:3]", w: "Slice a[:n] lấy n phần tử đầu tiên." },
+    { m: "Tạo dict comprehension d: key 1-5, value bình phương", r: /d\s*=\s*\{\s*x\s*:\s*x\s*\*\*\s*2\s+for\s+x\s+in\s+range\s*\(\s*1\s*,\s*6\s*\)\s*\}/, h: "d = {x: x**2 for x in range(1, 6)}", w: "Dict comprehension dùng cú pháp {key: value for ...}." },
+    { m: "Nối list b = [4,5] vào cuối list a", r: /a\.extend\s*\(\s*b\s*\)/, h: "a.extend(b)", w: "extend() thêm từng phần tử của list b vào a." },
+    { m: "Kiểm tra s1 có phải tập con của s2", r: /s1\.issubset\s*\(\s*s2\s*\)|s1\s*<=\s*s2/, h: "s1.issubset(s2) hoặc s1 <= s2", w: "issubset() hoặc <= kiểm tra tập con." },
+    { m: "Xóa tất cả phần tử trong list a", r: /a\.clear\s*\(\s*\)/, h: "a.clear()", w: "clear() xóa tất cả phần tử, giữ lại list rỗng." }
 ];
+
 
 let selectedModule = 1;
 let activeQuestions = [];
@@ -373,18 +463,33 @@ function drawChibi(char, rotation = 0, scale = 1, isTrail = false) {
     ctx.strokeStyle = sc; ctx.lineWidth = 7; ctx.lineCap = 'round';
     if (isGoalie) {
         if (state === 'diving' || state === 'superman') {
-            // Superman pose: arms extended forward
+            // Superman pose: arms extended forward (start from shoulders y=2)
             ctx.beginPath();
-            ctx.moveTo(-13, -15); ctx.lineTo(-45, -25);
-            ctx.moveTo(13, -15); ctx.lineTo(45, -25);
+            ctx.moveTo(-11, 2); ctx.lineTo(-42, -18);
+            ctx.moveTo(11, 2); ctx.lineTo(42, -18);
             ctx.stroke();
             // Optional: Gloves
             ctx.fillStyle = '#fff';
-            rr(-48, -30, 10, 10, 3); rr(38, -30, 10, 10, 3);
+            rr(-48, -25, 12, 12, 4); rr(36, -25, 12, 12, 4);
+            
+            // Draw sleeves on the raised arms
+            ctx.fillStyle = shirt;
+            ctx.save();
+            ctx.translate(-11, 2); ctx.rotate(Math.atan2(-20, -31)); 
+            rr(0, -4, 15, 8, 3);
+            ctx.restore();
+            ctx.save();
+            ctx.translate(11, 2); ctx.rotate(Math.atan2(-20, 31)); 
+            rr(0, -4, 15, 8, 3);
+            ctx.restore();
         } else if (state === 'catching') {
             ctx.beginPath(); ctx.moveTo(-13, 9); ctx.lineTo(-22, -9); ctx.moveTo(13, 9); ctx.lineTo(22, -9); ctx.stroke();
+            // Normal sleeves
+            ctx.fillStyle = shirt; rr(-20, 4, 8, 10, 4); rr(12, 4, 8, 10, 4);
         } else {
             ctx.beginPath(); ctx.moveTo(-13, 8); ctx.lineTo(-25, 22); ctx.moveTo(13, 8); ctx.lineTo(25, 22); ctx.stroke();
+            // Normal sleeves
+            ctx.fillStyle = shirt; rr(-20, 4, 8, 10, 4); rr(12, 4, 8, 10, 4);
         }
     } else {
         ctx.beginPath();
@@ -397,11 +502,11 @@ function drawChibi(char, rotation = 0, scale = 1, isTrail = false) {
             ctx.moveTo(-13, 7); ctx.lineTo(-21, 24); ctx.moveTo(13, 7); ctx.lineTo(21, 24);
         }
         ctx.stroke();
+        // Sleeves for player
+        ctx.fillStyle = shirt;
+        const sy = (state === 'kicking') ? 2 : 4;
+        rr(-20, sy, 8, 10, 4); rr(12, sy, 8, 10, 4);
     }
-    // Sleeves
-    ctx.fillStyle = shirt;
-    const sy = (state === 'kicking') ? 2 : 4;
-    rr(-20, sy, 8, 10, 4); rr(12, sy, 8, 10, 4);
 
     // --- Neck ---
     ctx.fillStyle = sc;
@@ -1120,15 +1225,15 @@ function showFinalResult() {
 
     saveScore(playerName, playerNumber, score);
 
-    if (score >= 6) {
-        if (score === 10) picksAllowed = 3;
-        else if (score >= 8) picksAllowed = 2;
-        else picksAllowed = 1;
+    if (score >= 7) {
+        if (score > 10) picksAllowed = 3;
+        else if (score >= 9) picksAllowed = 2;
+        else picksAllowed = 1; // 7-8 bàn
 
         msg += `<br>Phong độ tuyệt vời! Bạn nhận được <b>${picksAllowed}</b> lượt mở bao lì xì. 🔥`;
         openBtn.style.display = 'inline-block';
     } else {
-        msg += "<br>Hơi tiếc một chút! Bạn cần ít nhất 6 bàn để nhận được quà lì xì. Hãy cố gắng hơn nhé! 💪";
+        msg += "<br>Hơi tiếc một chút! Bạn cần ít nhất 7 bàn để nhận được quà lì xì. Hãy cố gắng hơn nhé! 💪";
         openBtn.style.display = 'none';
     }
 
