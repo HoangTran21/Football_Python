@@ -874,7 +874,7 @@ async function initGame() {
         lives = 3;
         consecutiveCorrect = 0;
         isPowerShot = false;
-        helps = { call: false, wise: false };
+        helps = { call: false, wise: false, fifty: false };
         document.querySelectorAll('.lifeline-btn').forEach(b => b.classList.remove('used'));
         showQuestion();
     } catch (e) {
@@ -1144,9 +1144,35 @@ function shoot(dir) {
 
 function useLifeline(type) {
     if (helps[type]) return;
+    const q = activeQuestions[currentQuestion];
+
+    if (type === 'fifty') {
+        if (q.type !== 'mcq') {
+            alert("Quyền trợ giúp này chỉ dành cho câu hỏi trắc nghiệm!");
+            return; // Don't mark as used
+        }
+        helps[type] = true;
+        document.getElementById(type + 'Btn').classList.add('used');
+
+        const btns = document.querySelectorAll('.opt-btn');
+        let incorrectIndices = [];
+        q.opts.forEach((opt, idx) => {
+            if (idx !== q.ans) incorrectIndices.push(idx);
+        });
+
+        // Pick 2 random incorrect indices to hide
+        const toHide = incorrectIndices.sort(() => Math.random() - 0.5).slice(0, 2);
+        toHide.forEach(idx => {
+            btns[idx].style.visibility = 'hidden';
+            btns[idx].style.pointerEvents = 'none';
+        });
+        player.thought = "Bớt đi 2 cái sai, dễ thôi mà!";
+        render();
+        return;
+    }
+
     helps[type] = true;
     document.getElementById(type + 'Btn').classList.add('used');
-    const q = activeQuestions[currentQuestion];
 
     let resultText = "";
     if (q.type === 'mcq') {
